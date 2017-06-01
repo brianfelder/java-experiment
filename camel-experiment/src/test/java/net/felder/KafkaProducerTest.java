@@ -1,5 +1,6 @@
 package net.felder;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
@@ -19,7 +20,7 @@ import java.io.Serializable;
 /**
  * Created by bfelder on 5/31/17.
  */
-public class KafkaTest extends CamelTestSupport {
+public class KafkaProducerTest extends CamelTestSupport {
     @EndpointInject(uri = "mock:result")
     protected MockEndpoint resultEndpoint;
 
@@ -44,7 +45,7 @@ public class KafkaTest extends CamelTestSupport {
     }
 
     @Test
-    public void testBeanRoundTrip() throws Exception {
+    public void sendOneMessage() throws Exception {
         resultEndpoint.expectedMessageCount(1);
         resultEndpoint.setResultWaitTime(3000);
 
@@ -58,35 +59,25 @@ public class KafkaTest extends CamelTestSupport {
     @Override
     protected RoutesBuilder createRouteBuilder() {
 
-        final Processor fromStringProcessor = getStringTesterProcessor("From");
-        final Processor toStringProcessor = getStringTesterProcessor("To");
+        final Processor bodyOutputProcessor = new Processor() {
+            public void process(Exchange exchange) throws Exception {
+                Object theBody = exchange.getIn().getBody();
+                System.out.println("bodyString: " + theBody.toString());
+            }
+        };
 
 
         RoutesBuilder toReturn = new RouteBuilder() {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
-                        .process(fromStringProcessor)
-                        .to("kafka://localhost:9092?topic=kafkaFirst&groupId=myGroup");
-
-                from("kafka://localhost:9092?topic=kafkaFirst&groupId=myGroup&autoOffsetReset=latest")
-                        .process(toStringProcessor)
+                        .process(bodyOutputProcessor)
+                        .to("kafka://localhost:9092?topic=kafkaFirst")
+                        .process(bodyOutputProcessor)
                         .to("mock:result");
-
             }
         };
 
-        return toReturn;
-    }
-
-    protected Processor getStringTesterProcessor(final String processorName) {
-        Processor toReturn = new Processor() {
-
-            public void process(Exchange exchange) throws Exception {
-                Object theBody = exchange.getIn().getBody();
-                System.out.println(processorName + ": " + theBody.toString());
-            }
-        };
         return toReturn;
     }
 
@@ -129,6 +120,15 @@ public class KafkaTest extends CamelTestSupport {
             }
             SomeGuy toTest = (SomeGuy)someOtherGuy;
             return toTest.hashCode() == this.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            String toReturn = MoreObjects.toStringHelper(this)
+                    .add("firstName", firstName)
+                    .add("lastName", lastName)
+                    .toString();
+            return toReturn;
         }
     }
 }
