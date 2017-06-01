@@ -21,6 +21,8 @@ import java.io.Serializable;
  * Created by bfelder on 5/31/17.
  */
 public class KafkaProducerTest extends CamelTestSupport {
+    private static final int MESSAGES_TO_SEND = 1;
+
     @EndpointInject(uri = "mock:result")
     protected MockEndpoint resultEndpoint;
 
@@ -46,9 +48,11 @@ public class KafkaProducerTest extends CamelTestSupport {
 
     @Test
     public void sendOneMessage() throws Exception {
-        resultEndpoint.expectedMessageCount(1);
+        resultEndpoint.expectedMessageCount(MESSAGES_TO_SEND);
 
-        template.sendBody(theGuy.getFirstName());
+        for (int i = 0; i < MESSAGES_TO_SEND; i++) {
+            template.sendBody(theGuy.getFirstName());
+        }
 
         resultEndpoint.assertIsSatisfied();
         Object theResult = resultEndpoint.getReceivedExchanges().get(0).getIn().getBody();
@@ -61,7 +65,9 @@ public class KafkaProducerTest extends CamelTestSupport {
         final Processor bodyOutputProcessor = new Processor() {
             public void process(Exchange exchange) throws Exception {
                 Object theBody = exchange.getIn().getBody();
-                System.out.println("bodyString: " + theBody.toString());
+                if (MESSAGES_TO_SEND == 1) {
+                    System.out.println("Sending: " + theBody.toString());
+                }
             }
         };
 
