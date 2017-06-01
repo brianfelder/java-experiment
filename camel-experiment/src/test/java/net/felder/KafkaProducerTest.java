@@ -71,7 +71,6 @@ public class KafkaProducerTest extends CamelTestSupport {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
-                        .process(bodyOutputProcessor)
                         .to("kafka://localhost:9092?topic=kafkaFirst")
                         .process(bodyOutputProcessor)
                         .to("mock:result");
