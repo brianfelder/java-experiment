@@ -47,7 +47,6 @@ public class KafkaProducerTest extends CamelTestSupport {
     @Test
     public void sendOneMessage() throws Exception {
         resultEndpoint.expectedMessageCount(1);
-        resultEndpoint.setResultWaitTime(3000);
 
         template.sendBody(theGuy.getFirstName());
 
