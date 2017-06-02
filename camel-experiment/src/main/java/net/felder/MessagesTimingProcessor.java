@@ -8,7 +8,8 @@ import org.apache.camel.Processor;
  */
 public class MessagesTimingProcessor implements Processor {
     int messageCount = 0;
-    long lastProcessTime = 0;
+    long lastProcessTimeMillis = 0;
+    long firstMessageTimeMillis = 0;
     int messageOutputFrequency;
     int lastMessageOutput = 0;
 
@@ -17,18 +18,23 @@ public class MessagesTimingProcessor implements Processor {
     }
 
     public void process(Exchange exchange) throws Exception {
-        if (lastProcessTime == 0) {
-            lastProcessTime = System.currentTimeMillis();
+        if (firstMessageTimeMillis == 0) {
+            firstMessageTimeMillis = System.currentTimeMillis();
+        }
+        if (lastProcessTimeMillis == 0) {
+            lastProcessTimeMillis = System.currentTimeMillis();
         }
         messageCount += this.getMessageCountFor(exchange);
         if (messageCount - lastMessageOutput >= messageOutputFrequency) {
             long timeNow = System.currentTimeMillis();
-            long durationSinceLast = timeNow - lastProcessTime;
+            long durationSinceLast = timeNow - lastProcessTimeMillis;
+            long totalDuration = timeNow - firstMessageTimeMillis;
             Object theBody = exchange.getIn().getBody();
             System.out.println("messageCount: " + messageCount +
                     ". durationSinceLast: " + durationSinceLast +
+                    ". totalDuration: " + totalDuration +
                     ". bodyString: " + theBody.toString());
-            lastProcessTime = timeNow;
+            lastProcessTimeMillis = timeNow;
             lastMessageOutput = messageCount;
         }
     }
