@@ -41,9 +41,9 @@ public class CamelKafkaConsumerRunner {
             from("kafka://localhost:9092?topic=kafkaFirst"
                     + "&groupId=myGroup::" + UUID.randomUUID().toString()
                     + "&autoOffsetReset=earliest"
-            )
-                    // .split()
-                    // .body()
+                    // + "&keyDeserializer=org.apache.kafka.common.serialization.StringDeserializer"
+                    // + "&valueDeserializer=org.apache.kafka.common.serialization.StringDeserializer"
+                    )
                     .process(bodyOutputProcessor);
         }
 
