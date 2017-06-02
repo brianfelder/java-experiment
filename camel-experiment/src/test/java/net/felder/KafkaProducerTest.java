@@ -83,8 +83,8 @@ public class KafkaProducerTest extends CamelTestSupport {
                         // .completionTimeout(5000)
                         .to("kafka://localhost:9092?topic=kafkaFirst"
                                 // + "&producerBatchSize=200000"
-                                + "&lingerMs=5"
-                                + "&maxInFlightRequest=1000"
+                                // + "&lingerMs=5"
+                                // + "&maxInFlightRequest=1000"
                         )
                         .process(bodyOutputProcessor)
                         .to("mock:result");
