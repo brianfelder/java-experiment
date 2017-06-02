@@ -3,12 +3,14 @@ package net.felder;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.processor.aggregate.AggregationStrategy;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by bfelder on 6/1/17.
@@ -19,12 +21,20 @@ public class CamelKafkaProducerRunner {
 
     public static void main(String[] args) throws Exception {
         CamelKafkaProducerRunner example = new CamelKafkaProducerRunner();
-        //example.boot();
+        example.boot();
     }
 
     public void boot() throws Exception {
         CamelContext camelContext = new DefaultCamelContext();
-        // ProducerTemplate template = new DefaultProducerTemplate();
+        camelContext.addRoutes(this.createRouteBuilder());
+        camelContext.start();
+        camelContext.startAllRoutes();
+        ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
+        producerTemplate.setDefaultEndpointUri("direct:start");
+        for (int i = 0; i < MESSAGES_TO_SEND; i++) {
+            Date currentDate = new Date();
+            producerTemplate.sendBody("msg #" + i + " " + currentDate.toString());
+        }
     }
 
     class ArrayListAggregationStrategy implements AggregationStrategy {
@@ -45,7 +55,6 @@ public class CamelKafkaProducerRunner {
         }
     }
 
-    // @Override
     protected RoutesBuilder createRouteBuilder() {
 
         final Processor bodyOutputProcessor = new Processor() {
@@ -63,6 +72,8 @@ public class CamelKafkaProducerRunner {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
+                        .routeId("messageToKafkaRoute")
+                        .process(bodyOutputProcessor)
                         .aggregate(constant(true), new ArrayListAggregationStrategy())
                         .completionSize(1000)
                         .completionTimeout(5000)
@@ -71,7 +82,6 @@ public class CamelKafkaProducerRunner {
                                 // + "&lingerMs=5"
                                 // + "&maxInFlightRequest=1000"
                         )
-                        .process(bodyOutputProcessor)
                         .process(messagesTimingProcessor)
                 // .to("mock:result")
                 ;
