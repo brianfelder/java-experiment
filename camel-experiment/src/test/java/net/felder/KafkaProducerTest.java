@@ -3,14 +3,12 @@ package net.felder;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.apache.camel.CamelContext;
-import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.processor.aggregate.AggregationStrategy;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Before;
@@ -24,11 +22,11 @@ import java.util.Date;
  * Created by bfelder on 5/31/17.
  */
 public class KafkaProducerTest extends CamelTestSupport {
-    private static final int MESSAGES_TO_SEND = 10_000_000;
+    private static final int MESSAGES_TO_SEND = 100_000_000;
     private static final int MESSAGE_OUTPUT_FREQUENCY = 10_000;
 
-    @EndpointInject(uri = "mock:result")
-    protected MockEndpoint resultEndpoint;
+    // @EndpointInject(uri = "mock:result")
+    // protected MockEndpoint resultEndpoint;
 
     @Produce(uri = "direct:start")
     protected ProducerTemplate template;
@@ -52,7 +50,7 @@ public class KafkaProducerTest extends CamelTestSupport {
 
     @Test
     public void sendMessages() throws Exception {
-        resultEndpoint.expectedMessageCount(MESSAGES_TO_SEND);
+        // resultEndpoint.expectedMessageCount(MESSAGES_TO_SEND);
 
         for (int i = 0; i < MESSAGES_TO_SEND; i++) {
             Date currentDate = new Date();
@@ -110,7 +108,8 @@ public class KafkaProducerTest extends CamelTestSupport {
                         )
                         .process(bodyOutputProcessor)
                         .process(messagesTimingProcessor)
-                        .to("mock:result");
+                        // .to("mock:result")
+                ;
             }
         };
 
