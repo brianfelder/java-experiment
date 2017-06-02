@@ -6,6 +6,8 @@ import org.apache.camel.main.Main;
 import org.apache.camel.main.MainListenerSupport;
 import org.apache.camel.main.MainSupport;
 
+import java.util.UUID;
+
 /**
  * Created by bfelder on 6/1/17.
  */
@@ -36,7 +38,10 @@ public class CamelKafkaConsumerRunner {
 
         @Override
         public void configure() throws Exception {
-            from("kafka://localhost:9092?topic=kafkaFirst&groupId=myGroup")
+            from("kafka://localhost:9092?topic=kafkaFirst"
+                    + "&groupId=myGroup::" + UUID.randomUUID().toString()
+                    + "&autoOffsetReset=earliest"
+            )
                     // .split()
                     // .body()
                     .process(bodyOutputProcessor);
