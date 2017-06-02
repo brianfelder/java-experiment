@@ -39,9 +39,13 @@ public class RawKafkaConsumerRunner {
         private String groupId;
         private KafkaConsumer<String, String> kafkaConsumer;
 
+        private static final int MESSAGE_OUTPUT_FREQUENCY = 10_000;
+        private MessageStatsPrinter messageStatsPrinter;
+
         public ConsumerThread(String topicName, String groupId) {
             this.topicName = topicName;
             this.groupId = groupId;
+            messageStatsPrinter = new MessageStatsPrinter(MESSAGE_OUTPUT_FREQUENCY);
         }
 
         public void run() {
@@ -53,6 +57,7 @@ public class RawKafkaConsumerRunner {
                     "org.apache.kafka.common.serialization.StringDeserializer");
             configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
             configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "simple");
+            configProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
             //Figure out where to start processing messages from
             kafkaConsumer = new KafkaConsumer<String, String>(configProperties);
@@ -62,7 +67,7 @@ public class RawKafkaConsumerRunner {
                 while (true) {
                     ConsumerRecords<String, String> records = kafkaConsumer.poll(100);
                     for (ConsumerRecord<String, String> record : records) {
-                        System.out.println(record.value());
+                        messageStatsPrinter.messageIfNeeded(record.value(), 1);
                     }
                 }
             } catch (WakeupException ex) {

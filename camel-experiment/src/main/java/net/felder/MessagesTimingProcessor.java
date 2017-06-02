@@ -7,36 +7,16 @@ import org.apache.camel.Processor;
  * Created by bfelder on 6/2/17.
  */
 public class MessagesTimingProcessor implements Processor {
-    int messageCount = 0;
-    long lastProcessTimeMillis = 0;
-    long firstMessageTimeMillis = 0;
-    int messageOutputFrequency;
-    int lastMessageOutput = 0;
+    private MessageStatsPrinter messageStatsPrinter;
 
     public MessagesTimingProcessor(int messageOutputFrequency) {
-        this.messageOutputFrequency = messageOutputFrequency;
+        this.messageStatsPrinter = new MessageStatsPrinter(messageOutputFrequency);
     }
 
     public void process(Exchange exchange) throws Exception {
-        if (firstMessageTimeMillis == 0) {
-            firstMessageTimeMillis = System.currentTimeMillis();
-        }
-        if (lastProcessTimeMillis == 0) {
-            lastProcessTimeMillis = System.currentTimeMillis();
-        }
-        messageCount += this.getMessageCountFor(exchange);
-        if (messageCount - lastMessageOutput >= messageOutputFrequency) {
-            long timeNow = System.currentTimeMillis();
-            long durationSinceLast = timeNow - lastProcessTimeMillis;
-            long totalDuration = timeNow - firstMessageTimeMillis;
-            Object theBody = exchange.getIn().getBody();
-            System.out.println("messageCount: " + messageCount +
-                    ". durationSinceLast: " + durationSinceLast +
-                    ". totalDuration: " + totalDuration +
-                    ". bodyString: " + theBody.toString());
-            lastProcessTimeMillis = timeNow;
-            lastMessageOutput = messageCount;
-        }
+        String messageBody = exchange.getIn().getBody().toString();
+        int messageCountForExchange = this.getMessageCountFor(exchange);
+        this.messageStatsPrinter.messageIfNeeded(messageBody, messageCountForExchange);
     }
 
     private int getMessageCountFor(Exchange exchange) {
