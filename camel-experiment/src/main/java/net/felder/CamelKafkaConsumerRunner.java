@@ -9,13 +9,13 @@ import org.apache.camel.main.MainSupport;
 /**
  * Created by bfelder on 6/1/17.
  */
-public class KafkaConsumerRunner {
+public class CamelKafkaConsumerRunner {
     private static final int MESSAGE_OUTPUT_FREQUENCY = 10_000;
 
     private Main main;
 
     public static void main(String[] args) throws Exception {
-        KafkaConsumerRunner example = new KafkaConsumerRunner();
+        CamelKafkaConsumerRunner example = new CamelKafkaConsumerRunner();
         example.boot();
     }
 
@@ -39,8 +39,7 @@ public class KafkaConsumerRunner {
             from("kafka://localhost:9092?topic=kafkaFirst&groupId=myGroup")
                     // .split()
                     // .body()
-                    .process(bodyOutputProcessor)
-                    .to("mock:result");
+                    .process(bodyOutputProcessor);
         }
 
     }
@@ -49,12 +48,12 @@ public class KafkaConsumerRunner {
 
         @Override
         public void afterStart(MainSupport main) {
-            System.out.println("KafkaConsumerRunner with Camel is now started!");
+            System.out.println("CamelKafkaConsumerRunner with Camel is now started!");
         }
 
         @Override
         public void beforeStop(MainSupport main) {
-            System.out.println("KafkaConsumerRunner with Camel is now being stopped!");
+            System.out.println("CamelKafkaConsumerRunner with Camel is now being stopped!");
         }
     }
 

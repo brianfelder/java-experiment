@@ -1,6 +1,5 @@
 package net.felder;
 
-import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -15,7 +14,7 @@ import java.util.UUID;
 /**
  * Created by cezargrzelak on 6/1/17.
  */
-public class RawKafkaConsumer {
+public class RawKafkaConsumerRunner {
     private static Scanner in;
     private static boolean stop = false;
 
