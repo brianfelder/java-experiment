@@ -11,18 +11,21 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.processor.aggregate.AggregationStrategy;
+import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Created by bfelder on 5/31/17.
  */
 public class KafkaProducerTest extends CamelTestSupport {
-    private static final int MESSAGES_TO_SEND = 100_000;
+    private static final int MESSAGES_TO_SEND = 1000_000;
 
     @EndpointInject(uri = "mock:result")
     protected MockEndpoint resultEndpoint;
@@ -53,12 +56,30 @@ public class KafkaProducerTest extends CamelTestSupport {
 
         for (int i = 0; i < MESSAGES_TO_SEND; i++) {
             Date currentDate = new Date();
-            template.sendBody(currentDate.toString());
+            template.sendBody("msg #" + i + " " + currentDate.toString());
         }
 
         // resultEndpoint.assertIsSatisfied();
         // Object theResult = resultEndpoint.getReceivedExchanges().get(0).getIn().getBody();
         // assertEquals(theResult, theGuy.getFirstName());
+    }
+
+    class ArrayListAggregationStrategy implements AggregationStrategy {
+
+        public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
+            Object newBody = newExchange.getIn().getBody();
+            ArrayList<Object> list = null;
+            if (oldExchange == null) {
+                list = new ArrayList<Object>();
+                list.add(newBody);
+                newExchange.getIn().setBody(list);
+                return newExchange;
+            } else {
+                list = oldExchange.getIn().getBody(ArrayList.class);
+                list.add(newBody);
+                return oldExchange;
+            }
+        }
     }
 
     @Override
@@ -78,13 +99,13 @@ public class KafkaProducerTest extends CamelTestSupport {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
-                        // .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
-                        // .completionSize(1000)
-                        // .completionTimeout(5000)
+                        .aggregate(constant(true), new ArrayListAggregationStrategy())
+                        .completionSize(100)
+                        .completionTimeout(5000)
                         .to("kafka://localhost:9092?topic=kafkaFirst"
-                                // + "&producerBatchSize=200000"
-                                + "&lingerMs=5"
-                                + "&maxInFlightRequest=1000"
+//                                + "&producerBatchSize=200"
+//                                + "&lingerMs=1"
+//                                + "&maxInFlightRequest=1000"
                         )
                         .process(bodyOutputProcessor)
                         .to("mock:result");
