@@ -61,3 +61,6 @@ One Topic per Route (three total, system-wide: From, Mid, To)
 
 One Topic, system-wide
 ** Consumers would filter by Job, Path, and Route.
+
+
+Look into CQRS
