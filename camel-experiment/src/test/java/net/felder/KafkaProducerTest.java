@@ -12,7 +12,6 @@ import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.processor.aggregate.AggregationStrategy;
-import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +24,8 @@ import java.util.Date;
  * Created by bfelder on 5/31/17.
  */
 public class KafkaProducerTest extends CamelTestSupport {
-    private static final int MESSAGES_TO_SEND = 1000_000;
+    private static final int MESSAGES_TO_SEND = 100_000;
+    private static final int MESSAGE_OUTPUT_FREQUENCY = 10_000;
 
     @EndpointInject(uri = "mock:result")
     protected MockEndpoint resultEndpoint;
@@ -51,7 +51,7 @@ public class KafkaProducerTest extends CamelTestSupport {
     }
 
     @Test
-    public void sendOneMessage() throws Exception {
+    public void sendMessages() throws Exception {
         resultEndpoint.expectedMessageCount(MESSAGES_TO_SEND);
 
         for (int i = 0; i < MESSAGES_TO_SEND; i++) {
@@ -94,6 +94,7 @@ public class KafkaProducerTest extends CamelTestSupport {
             }
         };
 
+        final Processor messagesTimingProcessor = new MessagesTimingProcessor(MESSAGE_OUTPUT_FREQUENCY);
 
         RoutesBuilder toReturn = new RouteBuilder() {
             @Override
@@ -108,6 +109,7 @@ public class KafkaProducerTest extends CamelTestSupport {
                                 // + "&maxInFlightRequest=1000"
                         )
                         .process(bodyOutputProcessor)
+                        .process(messagesTimingProcessor)
                         .to("mock:result");
             }
         };
