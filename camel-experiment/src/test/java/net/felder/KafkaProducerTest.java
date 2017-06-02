@@ -16,19 +16,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by bfelder on 5/31/17.
  */
 public class KafkaProducerTest extends CamelTestSupport {
-    private static final int MESSAGES_TO_SEND = 1;
+    private static final int MESSAGES_TO_SEND = 100_000;
 
     @EndpointInject(uri = "mock:result")
     protected MockEndpoint resultEndpoint;
 
     @Produce(uri = "direct:start")
     protected ProducerTemplate template;
-    protected SomeGuy theGuy;
+    // protected SomeGuy theGuy;
 
     @Override
     public boolean isDumpRouteCoverage() {
@@ -38,7 +39,7 @@ public class KafkaProducerTest extends CamelTestSupport {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        theGuy = new SomeGuy("Brian", "Felder");
+        // theGuy = new SomeGuy("Brian", "Felder");
     }
 
     @Override
@@ -51,12 +52,13 @@ public class KafkaProducerTest extends CamelTestSupport {
         resultEndpoint.expectedMessageCount(MESSAGES_TO_SEND);
 
         for (int i = 0; i < MESSAGES_TO_SEND; i++) {
-            template.sendBody(theGuy.getFirstName());
+            Date currentDate = new Date();
+            template.sendBody(currentDate.toString());
         }
 
-        resultEndpoint.assertIsSatisfied();
-        Object theResult = resultEndpoint.getReceivedExchanges().get(0).getIn().getBody();
-        assertEquals(theResult, theGuy.getFirstName());
+        // resultEndpoint.assertIsSatisfied();
+        // Object theResult = resultEndpoint.getReceivedExchanges().get(0).getIn().getBody();
+        // assertEquals(theResult, theGuy.getFirstName());
     }
 
     @Override
@@ -76,7 +78,14 @@ public class KafkaProducerTest extends CamelTestSupport {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
-                        .to("kafka://localhost:9092?topic=kafkaFirst")
+                        // .aggregate(constant(true), new GroupedExchangeAggregationStrategy())
+                        // .completionSize(1000)
+                        // .completionTimeout(5000)
+                        .to("kafka://localhost:9092?topic=kafkaFirst"
+                                // + "&producerBatchSize=200000"
+                                + "&lingerMs=5"
+                                + "&maxInFlightRequest=1000"
+                        )
                         .process(bodyOutputProcessor)
                         .to("mock:result");
             }
