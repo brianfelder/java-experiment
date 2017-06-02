@@ -24,7 +24,7 @@ import java.util.Date;
  * Created by bfelder on 5/31/17.
  */
 public class KafkaProducerTest extends CamelTestSupport {
-    private static final int MESSAGES_TO_SEND = 1_000_000;
+    private static final int MESSAGES_TO_SEND = 10_000_000;
     private static final int MESSAGE_OUTPUT_FREQUENCY = 10_000;
 
     @EndpointInject(uri = "mock:result")
@@ -101,7 +101,7 @@ public class KafkaProducerTest extends CamelTestSupport {
             public void configure() throws Exception {
                 from("direct:start")
                         .aggregate(constant(true), new ArrayListAggregationStrategy())
-                        .completionSize(100)
+                        .completionSize(1000)
                         .completionTimeout(5000)
                         .to("kafka://localhost:9092?topic=kafkaFirst"
                                 // + "&producerBatchSize=200000"
