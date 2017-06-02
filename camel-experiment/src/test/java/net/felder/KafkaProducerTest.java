@@ -24,7 +24,7 @@ import java.util.Date;
  * Created by bfelder on 5/31/17.
  */
 public class KafkaProducerTest extends CamelTestSupport {
-    private static final int MESSAGES_TO_SEND = 100_000;
+    private static final int MESSAGES_TO_SEND = 1_000_000;
     private static final int MESSAGE_OUTPUT_FREQUENCY = 10_000;
 
     @EndpointInject(uri = "mock:result")

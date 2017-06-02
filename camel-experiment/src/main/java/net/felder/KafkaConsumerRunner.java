@@ -37,8 +37,8 @@ public class KafkaConsumerRunner {
         @Override
         public void configure() throws Exception {
             from("kafka://localhost:9092?topic=kafkaFirst&groupId=myGroup")
-                    .split()
-                    .body()
+                    // .split()
+                    // .body()
                     .process(bodyOutputProcessor)
                     .to("mock:result");
         }
