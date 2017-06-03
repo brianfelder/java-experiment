@@ -33,10 +33,9 @@ bin/kafka-topics.sh --zookeeper localhost:2181 --list
 
 
 
-Java producer/consumer:
-mvn -Dtest=net.felder.KafkaProducerTest#sendOneMessage test
-mvn exec:java -Dexec.mainClass="net.felder.KafkaConsumerRunner"
-
+Java producer/consumer (both from camel-experiment folder):
+mvn exec:java -Dexec.mainClass="net.felder.CamelKafkaProducerRunner"
+mvn exec:java -Dexec.mainClass="net.felder.CamelKafkaConsumerRunner"
 
 
 Consume from the console:
