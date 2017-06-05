@@ -2,6 +2,8 @@ package net.felder;
 
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.kafka.KafkaComponent;
+import org.apache.camel.component.kafka.KafkaEndpoint;
 import org.apache.camel.main.Main;
 import org.apache.camel.main.MainListenerSupport;
 import org.apache.camel.main.MainSupport;
@@ -38,12 +40,14 @@ public class CamelKafkaConsumerRunner {
 
         @Override
         public void configure() throws Exception {
-            from("kafka://localhost:9092?topic=kafkaFirst"
+            KafkaComponent kafkaComponent = (KafkaComponent) getContext().getComponent("kafka");
+            KafkaEndpoint endpoint = (KafkaEndpoint) kafkaComponent.createEndpoint(
+                    "kafka://localhost:9092?topic=kafkaFirst"
                     + "&groupId=myGroup::" + UUID.randomUUID().toString()
                     + "&autoOffsetReset=earliest"
-                    // + "&keyDeserializer=org.apache.kafka.common.serialization.StringDeserializer"
-                    // + "&valueDeserializer=org.apache.kafka.common.serialization.StringDeserializer"
-                    )
+                    + "&pollTimeoutMs=1000"
+            );
+            from(endpoint)
                     .process(bodyOutputProcessor);
         }
 
