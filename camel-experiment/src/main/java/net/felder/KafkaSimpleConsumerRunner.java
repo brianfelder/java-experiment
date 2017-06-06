@@ -3,16 +3,16 @@ package net.felder;
 /**
  * Created by bfelder on 6/1/17.
  */
-public class DummyConsumerRunner extends CamelConsumerRunnerBase {
+public class KafkaSimpleConsumerRunner extends CamelConsumerRunnerBase {
 
 
     public static void main(String[] args) throws Exception {
-        DummyConsumerRunner example = new DummyConsumerRunner();
+        KafkaSimpleConsumerRunner example = new KafkaSimpleConsumerRunner();
         example.boot();
     }
 
     @Override
     public String getConsumerUrl() {
-        return "dummy://noop";
+        return "kafkasimple://noop";
     }
 }

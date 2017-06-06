@@ -1,4 +1,4 @@
-package net.felder.component.producer;
+package net.felder.component.kafkasimple.producer;
 
 
 import org.apache.camel.Endpoint;
@@ -14,9 +14,9 @@ import org.apache.camel.impl.DefaultProducer;
  *
  * @param <T> Type parameter.
  */
-public class DummyProducer<T> extends DefaultProducer {
+public class KafkaSimpleProducer<T> extends DefaultProducer {
 
-    public DummyProducer(Endpoint endpoint) {
+    public KafkaSimpleProducer(Endpoint endpoint) {
         super(endpoint);
     }
 

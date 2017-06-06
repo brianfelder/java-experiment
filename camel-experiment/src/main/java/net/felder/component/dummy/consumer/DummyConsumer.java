@@ -1,6 +1,6 @@
-package net.felder.component.consumer;
+package net.felder.component.dummy.consumer;
 
-import net.felder.component.DummyEndpoint;
+import net.felder.component.dummy.DummyEndpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;

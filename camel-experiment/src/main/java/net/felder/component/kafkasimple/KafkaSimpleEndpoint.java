@@ -1,6 +1,6 @@
-package net.felder.component;
+package net.felder.component.kafkasimple;
 
-import net.felder.component.consumer.DummyConsumer;
+import net.felder.component.kafkasimple.consumer.KafkaSimpleConsumer;
 import org.apache.camel.Consumer;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
@@ -16,13 +16,13 @@ syntax = "dummy://noop",
 consumerOnly = false,
 consumerPrefix = "consumer",
 label = "api,file",
-title = "DummyEndpoint")
-public class DummyEndpoint extends DefaultEndpoint {
+title = "KafkaSimpleEndpoint")
+public class KafkaSimpleEndpoint extends DefaultEndpoint {
 
-    public DummyEndpoint() {
+    public KafkaSimpleEndpoint() {
     }
 
-    public DummyEndpoint(String uri, DummyComponent component) {
+    public KafkaSimpleEndpoint(String uri, KafkaSimpleComponent component) {
         super(uri, component);
     }
 
@@ -34,7 +34,7 @@ public class DummyEndpoint extends DefaultEndpoint {
 
     @Override
     public Consumer createConsumer(Processor processor) throws Exception {
-        return new DummyConsumer(this, processor);
+        return new KafkaSimpleConsumer(this, processor);
     }
 
     @Override
@@ -43,6 +43,6 @@ public class DummyEndpoint extends DefaultEndpoint {
     }
 
     public ExecutorService createExecutor() {
-        return getCamelContext().getExecutorServiceManager().newFixedThreadPool(this, "DummyConsumer[]", 10);
+        return getCamelContext().getExecutorServiceManager().newFixedThreadPool(this, "KafkaSimpleConsumer[]", 10);
     }
 }

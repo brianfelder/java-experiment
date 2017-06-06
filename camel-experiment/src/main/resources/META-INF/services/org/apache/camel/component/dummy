@@ -1,1 +1,1 @@
-class=net.felder.component.DummyComponent
+class=net.felder.component.dummy.DummyComponent
