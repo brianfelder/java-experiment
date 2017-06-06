@@ -2,6 +2,7 @@ package net.felder.component;
 
 import net.felder.component.consumer.DummyConsumer;
 import org.apache.camel.Consumer;
+import org.apache.camel.MultipleConsumersSupport;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
@@ -17,7 +18,9 @@ consumerOnly = false,
 consumerPrefix = "consumer",
 label = "api,file",
 title = "DummyEndpoint")
-public class DummyEndpoint extends DefaultEndpoint {
+public class DummyEndpoint extends DefaultEndpoint implements MultipleConsumersSupport {
+
+    private boolean bridgeEndpoint;
 
     public DummyEndpoint() {
     }
@@ -42,6 +45,18 @@ public class DummyEndpoint extends DefaultEndpoint {
         return true;
     }
 
+    @Override
+    public boolean isMultipleConsumersSupported() {
+        return true;
+    }
+
+    public boolean isBridgeEndpoint() {
+        return bridgeEndpoint;
+    }
+
+    public void setBridgeEndpoint(boolean bridgeEndpoint) {
+        this.bridgeEndpoint = bridgeEndpoint;
+    }
 
     public ExecutorService createExecutor() {
         return getCamelContext().getExecutorServiceManager().newFixedThreadPool(this, "DummyConsumer[]", 10);
