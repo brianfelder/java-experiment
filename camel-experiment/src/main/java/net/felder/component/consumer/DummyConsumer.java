@@ -27,7 +27,7 @@ public class DummyConsumer extends DefaultConsumer {
 
     @Override
     protected void doStart() throws Exception {
-        LOG.info("Starting Kafka consumer");
+        LOG.info("Starting consumer");
         super.doStart();
 
         executor = ((DummyEndpoint) getEndpoint()).createExecutor();
@@ -40,7 +40,7 @@ public class DummyConsumer extends DefaultConsumer {
 
     @Override
     protected void doStop() throws Exception {
-        LOG.info("Stopping Kafka consumer");
+        LOG.info("Stopping consumer");
 
         if (executor != null) {
             if (getEndpoint() != null && getEndpoint().getCamelContext() != null) {
