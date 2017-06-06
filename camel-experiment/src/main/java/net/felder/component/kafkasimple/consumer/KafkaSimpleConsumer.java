@@ -33,9 +33,12 @@ public class KafkaSimpleConsumer extends DefaultConsumer {
 
     protected ExecutorService executor;
     private final List<KafkaSimpleFetchRecords> tasks = new ArrayList<>();
+    private final Processor processor;
+
 
     public KafkaSimpleConsumer(KafkaSimpleEndpoint endpoint, Processor processor) {
         super(endpoint, processor);
+        this.processor = processor;
     }
 
     @Override
@@ -110,7 +113,12 @@ public class KafkaSimpleConsumer extends DefaultConsumer {
                         ConsumerRecord<String, String> record = partitionLastOffset.next();
                         Exchange exchange = this.createKafkaExchange(record);
                         try {
-                            KafkaSimpleConsumer.this.getProcessor().process(exchange);
+                            try {
+                                KafkaSimpleConsumer.this.processor.process(exchange);
+                            } catch (Exception e) {
+                                KafkaSimpleConsumer.this.getExceptionHandler().handleException("Error during " +
+                                        "processing", exchange, e);
+                            }
                         } catch (Exception e) {
                             getExceptionHandler().handleException("Error during processing", exchange, e);
                         }
@@ -126,7 +134,7 @@ public class KafkaSimpleConsumer extends DefaultConsumer {
             Message message = exchange.getIn();
             message.setHeader(KafkaConstants.PARTITION, record.partition());
             message.setHeader(KafkaConstants.TOPIC, record.topic());
-            message.setHeader(KafkaConstants.OFFSET, record.offset());
+            message.setHeader(KafkaConstants.OFFSET, Long.valueOf(record.offset()));
             if (record.key() != null) {
                 message.setHeader(KafkaConstants.KEY, record.key());
             }
