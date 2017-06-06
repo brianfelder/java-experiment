@@ -6,7 +6,6 @@ import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.impl.DefaultConsumer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -89,6 +88,48 @@ public class KafkaSimpleConsumer extends DefaultConsumer {
         @SuppressWarnings("unchecked")
         public void run() {
             Properties configProperties = new Properties();
+
+            // These are the properties of the Camel standard KafkaConsumer.
+            configProperties.put("sasl.kerberos.ticket.renew.jitter", "0.05");
+            configProperties.put("metrics.num.samples", "2");
+            configProperties.put("key.deserializer", "class org.apache.kafka.common.serialization.StringDeserializer");
+            configProperties.put("request.timeout.ms", "40000");
+            configProperties.put("value.deserializer", "class org.apache.kafka.common.serialization.StringDeserializer");
+            configProperties.put("partition.assignment.strategy", "org.apache.kafka.clients.consumer.RangeAssignor");
+            configProperties.put("send.buffer.bytes", "131072");
+            configProperties.put("sasl.kerberos.kinit.cmd", "/usr/bin/kinit");
+            configProperties.put("ssl.enabled.protocols", "TLSv1.2,TLSv1.1,TLSv1");
+            configProperties.put("sasl.kerberos.ticket.renew.window.factor", "0.8");
+            configProperties.put("metadata.max.age.ms", "300000");
+            configProperties.put("ssl.keystore.type", "JKS");
+            configProperties.put("enable.auto.commit", "true");
+            configProperties.put("ssl.trustmanager.algorithm", "PKIX");
+            configProperties.put("ssl.keymanager.algorithm", "SunX509");
+            configProperties.put("security.protocol", "PLAINTEXT");
+            configProperties.put("sasl.mechanism", "GSSAPI");
+            configProperties.put("ssl.protocol", "TLS");
+            configProperties.put("group.id", "myGroup::4042708d-db99-47b0-8cf4-d86749333fc5");
+            configProperties.put("check.crcs", "true");
+            configProperties.put("ssl.truststore.type", "JKS");
+            configProperties.put("auto.offset.reset", "earliest");
+            configProperties.put("bootstrap.servers", "localhost:9092");
+            configProperties.put("session.timeout.ms", "30000");
+            configProperties.put("fetch.min.bytes", "1024");
+            configProperties.put("heartbeat.interval.ms", "3000");
+            configProperties.put("max.partition.fetch.bytes", "1048576");
+            configProperties.put("connections.max.idle.ms", "540000");
+            configProperties.put("receive.buffer.bytes", "32768");
+            configProperties.put("sasl.kerberos.min.time.before.relogin", "60000");
+            configProperties.put("fetch.max.wait.ms", "500");
+            configProperties.put("retry.backoff.ms", "100");
+            configProperties.put("metrics.sample.window.ms", "30000");
+            configProperties.put("auto.commit.interval.ms", "5000");
+            configProperties.put("reconnect.backoff.ms", "50");
+
+
+
+            // This is the original set of properties we used when preformance was better.
+            /*
             configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
             configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                     "org.apache.kafka.common.serialization.StringDeserializer");
@@ -97,6 +138,7 @@ public class KafkaSimpleConsumer extends DefaultConsumer {
             configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
             configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "simple");
             configProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+            */
 
             //Figure out where to start processing messages from
             kafkaConsumer = new KafkaConsumer<String, String>(configProperties);
