@@ -10,11 +10,13 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -99,12 +101,20 @@ public class KafkaSimpleConsumer extends DefaultConsumer {
 
             while (isRunAllowed() && !isStoppingOrStopped() && !isSuspendingOrSuspended()) {
                 ConsumerRecords<String, String> records = kafkaConsumer.poll(100);
-                for (ConsumerRecord<String, String> record : records) {
-                    Exchange exchange = this.createKafkaExchange(record);
-                    try {
-                        KafkaSimpleConsumer.this.getProcessor().process(exchange);
-                    } catch (Exception e) {
-                        getExceptionHandler().handleException("Error during processing", exchange, e);
+                Iterator<TopicPartition> it = records.partitions().iterator();
+                while (it.hasNext()) {
+                    TopicPartition topicPartition = it.next();
+                    List<ConsumerRecord<String, String>> partitionRecords = records.records(topicPartition);
+                    Iterator<ConsumerRecord<String, String>> partitionLastOffset = partitionRecords.iterator();
+                    while (partitionLastOffset.hasNext()) {
+                        ConsumerRecord<String, String> record = partitionLastOffset.next();
+                        Exchange exchange = this.createKafkaExchange(record);
+                        try {
+                            KafkaSimpleConsumer.this.getProcessor().process(exchange);
+                        } catch (Exception e) {
+                            getExceptionHandler().handleException("Error during processing", exchange, e);
+                        }
+
                     }
                 }
             }

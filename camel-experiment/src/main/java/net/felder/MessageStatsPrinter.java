@@ -2,38 +2,41 @@ package net.felder;
 
 import org.apache.camel.Exchange;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * Created by bfelder on 6/2/17.
  */
 public class MessageStatsPrinter {
-    int totalMessageCount = 0;
-    long lastProcessTimeMillis = 0;
-    long firstMessageTimeMillis = 0;
-    int messageOutputFrequency;
-    int lastMessageOutput = 0;
+    private AtomicLong totalMessageCount = new AtomicLong();
+    private AtomicLong lastProcessTimeMillis = new AtomicLong();
+    private AtomicLong firstMessageTimeMillis = new AtomicLong();
+    private final int messageOutputFrequency;
+    private AtomicLong lastMessageOutput = new AtomicLong();
 
     public MessageStatsPrinter(int messageOutputFrequency) {
         this.messageOutputFrequency = messageOutputFrequency;
     }
 
     public void messageIfNeeded(String theMessageBody, int messagesInBatch) {
-        if (firstMessageTimeMillis == 0) {
-            firstMessageTimeMillis = System.currentTimeMillis();
+        if (firstMessageTimeMillis.longValue() == 0) {
+            firstMessageTimeMillis.set(System.currentTimeMillis());
         }
-        if (lastProcessTimeMillis == 0) {
-            lastProcessTimeMillis = System.currentTimeMillis();
+        if (lastProcessTimeMillis.longValue() == 0) {
+            lastProcessTimeMillis.set(System.currentTimeMillis());
         }
-        totalMessageCount += messagesInBatch;
-        if (totalMessageCount - lastMessageOutput >= messageOutputFrequency) {
+        totalMessageCount.set(totalMessageCount.intValue() + messagesInBatch);
+        if (totalMessageCount.longValue() - lastMessageOutput.longValue() >= messageOutputFrequency) {
             long timeNow = System.currentTimeMillis();
-            long durationSinceLast = timeNow - lastProcessTimeMillis;
-            long totalDuration = timeNow - firstMessageTimeMillis;
+            long durationSinceLast = timeNow - lastProcessTimeMillis.longValue();
+            long totalDuration = timeNow - firstMessageTimeMillis.longValue();
             System.out.println("totalMessageCount: " + totalMessageCount +
                     ". totalDuration: " + totalDuration +
                     ". durationSinceLast: " + durationSinceLast +
                     ". bodyString: " + theMessageBody);
-            lastProcessTimeMillis = timeNow;
-            lastMessageOutput = totalMessageCount;
+            lastProcessTimeMillis.set(timeNow);
+            lastMessageOutput.set(totalMessageCount.longValue());
         }
     }
 
