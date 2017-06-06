@@ -77,6 +77,9 @@ public class DummyConsumer extends DefaultConsumer {
         public Exchange createDummyExchange() {
             Exchange exchange = getEndpoint().createExchange();
             Message message = exchange.getIn();
+            message.setHeader("kafka.PARTITION", "a partition");
+            message.setHeader("kafka.TOPIC", "a topic");
+            message.setHeader("kafka.OFFSET", 123L);
             message.setBody("Dummy - " + System.currentTimeMillis());
             return exchange;
         }
