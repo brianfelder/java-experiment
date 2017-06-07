@@ -58,6 +58,7 @@ public class RawKafkaConsumerRunner {
             configProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
             configProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, "simple");
             configProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+            configProperties.put(ConsumerConfig.RECEIVE_BUFFER_CONFIG, "65536");
 
             //Figure out where to start processing messages from
             kafkaConsumer = new KafkaConsumer<String, String>(configProperties);

@@ -18,6 +18,6 @@ public class CamelKafkaConsumerRunner extends CamelConsumerRunnerBase {
         return "kafka://localhost:9092?topic=kafkaFirst"
                 + "&groupId=myGroup::" + UUID.randomUUID().toString()
                 + "&autoOffsetReset=earliest"
-                + "&pollTimeoutMs=1000";
+                + "&receiveBufferBytes=65536";
     }
 }
