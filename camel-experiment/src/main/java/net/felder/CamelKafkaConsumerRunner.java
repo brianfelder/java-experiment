@@ -23,6 +23,6 @@ public class CamelKafkaConsumerRunner extends CamelConsumerRunnerBase {
                 + "&groupId=myGroup::" + UUID.randomUUID().toString()
                 + "&autoOffsetReset=earliest"
                 + "&pollTimeoutMs=1000"
-                + "&receiveBufferBytes=32768";
+                + "&receiveBufferBytes=65536";
     }
 }
