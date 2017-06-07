@@ -12,6 +12,9 @@ public class Attendee {
         this.lastName = lastName;
     }
 
+    public Attendee() {
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -26,5 +29,13 @@ public class Attendee {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "Attendee {" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }
