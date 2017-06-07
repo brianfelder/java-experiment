@@ -106,7 +106,9 @@ public class KafkaSimpleConsumer extends DefaultConsumer {
             configProperties.put("metrics.num.samples", "2");
             configProperties.put("metrics.sample.window.ms", "30000");
             configProperties.put("partition.assignment.strategy", "org.apache.kafka.clients.consumer.RangeAssignor");
-            configProperties.put("receive.buffer.bytes", "32768");
+            // This parameter caused Cezar's machine to slow down periodically on reads, when set to its default
+            // at 32768. When increased to 64k, it performed as normal.
+            configProperties.put("receive.buffer.bytes", "65536");
             configProperties.put("reconnect.backoff.ms", "50");
             configProperties.put("request.timeout.ms", "40000");
             configProperties.put("retry.backoff.ms", "100");
