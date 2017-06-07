@@ -10,7 +10,6 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.processor.aggregate.AggregationStrategy;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by bfelder on 6/1/17.
@@ -32,8 +31,8 @@ public class CamelKafkaProducerRunner {
         ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
         producerTemplate.setDefaultEndpointUri("direct:start");
         for (int i = 0; i < MESSAGES_TO_SEND; i++) {
-            Date currentDate = new Date();
-            producerTemplate.sendBody("msg #" + i + " " + currentDate.toString());
+            Attendee toSend = new Attendee("Brian", "Felder");
+            producerTemplate.sendBody(toSend);
         }
     }
 
@@ -77,12 +76,12 @@ public class CamelKafkaProducerRunner {
                         .aggregate(constant(true), new ArrayListAggregationStrategy())
                         .completionSize(1000)
                         .completionTimeout(5000)
+                        .process(messagesTimingProcessor)
                         .to("kafka://localhost:9092?topic=kafkaFirst"
                                 // + "&producerBatchSize=200000"
                                 // + "&lingerMs=5"
                                 // + "&maxInFlightRequest=1000"
                         )
-                        .process(messagesTimingProcessor)
                 // .to("mock:result")
                 ;
             }
