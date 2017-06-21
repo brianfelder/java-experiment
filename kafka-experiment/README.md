@@ -33,7 +33,7 @@ bin/kafka-topics.sh --zookeeper localhost:2181 --list
 
 
 
-Java producer/consumer (both from camel-experiment folder):
+Java producer/consumer (both from kafka-experiment folder):
 mvn exec:java -Dexec.mainClass="net.felder.CamelKafkaProducerRunner"
 mvn exec:java -Dexec.mainClass="net.felder.CamelKafkaConsumerRunner"
 mvn exec:java -Dexec.mainClass="net.felder.RawKafkaConsumerRunner"
