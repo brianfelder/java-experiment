@@ -10,6 +10,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>camel-experiment</module>
+        <module>kafka-experiment</module>
     </modules>
 
 
