@@ -1,4 +1,4 @@
-package net.felder;
+package net.felder.attendeesorter;
 
 /**
  * Created by bfelder on 6/22/17.
