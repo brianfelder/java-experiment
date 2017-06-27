@@ -54,6 +54,10 @@ public abstract class KafkaJsonDeserializer<T> implements Deserializer<T> {
         }
     }
 
+    /**
+     * TODO: Make a generic one of these, where we include the type as an attribute.
+     * @return
+     */
     protected abstract Class<T> getType();
 
     @Override

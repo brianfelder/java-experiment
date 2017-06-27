@@ -1,5 +1,6 @@
 package net.felder.keymapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -8,9 +9,7 @@ import java.util.UUID;
  */
 public class DataSinkRequest {
     private UUID requestId;
-    private String sourceId;
-    private String targetId;
-    private List itemsToSend;
+    private List<DataSinkRequestItem> items = new ArrayList<>();
 
     public UUID getRequestId() {
         return requestId;
@@ -20,28 +19,8 @@ public class DataSinkRequest {
         this.requestId = requestId;
     }
 
-    public String getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
-    }
-
-    public String getTargetId() {
-        return targetId;
-    }
-
-    public void setTargetId(String targetId) {
-        this.targetId = targetId;
-    }
-
-    public List getItemsToSend() {
-        return itemsToSend;
-    }
-
-    public void setItemsToSend(List itemsToSend) {
-        this.itemsToSend = itemsToSend;
+    public List<DataSinkRequestItem> getItems() {
+        return items;
     }
 
 }
