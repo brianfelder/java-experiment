@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-package net.felder.keymapping;
+package net.felder.keymapping.ix.serdes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.errors.SerializationException;

@@ -1,5 +1,6 @@
-package net.felder.keymapping;
+package net.felder.keymapping.ix;
 
+import net.felder.keymapping.ix.model.IxRecordKey;
 import org.apache.kafka.clients.producer.Partitioner;
 import org.apache.kafka.common.Cluster;
 import org.apache.kafka.common.PartitionInfo;

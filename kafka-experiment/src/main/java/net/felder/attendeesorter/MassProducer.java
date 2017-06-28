@@ -1,6 +1,5 @@
 package net.felder.attendeesorter;
 
-import net.felder.Constants;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -24,7 +23,7 @@ public class MassProducer {
         for (int i = 0; i < 10000; i++) {
             String key = "attendee-" + Integer.toString(i);
             String value = NameUtils.randomName();
-            producer.send(new ProducerRecord<>(Constants.ATTENDEE_INPUT_TOPIC, null, null, key, value));
+            producer.send(new ProducerRecord<>(AttendeeSorterConstants.ATTENDEE_INPUT_TOPIC, null, null, key, value));
             System.out.println("Sent tuple. key = " + key + " value = " + value);
         }
 

@@ -1,4 +1,4 @@
-package net.felder.keymapping;
+package net.felder.keymapping.ix.model;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -11,6 +11,10 @@ public class IxRecordKey {
     private String systemName;
     private String itemType;
     private String itemId;
+
+    public IxRecordKey() {
+        super();
+    }
 
     public IxRecordKey(String jobId, String systemName, String itemType, String itemId) {
         this.jobId = jobId;

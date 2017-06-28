@@ -1,7 +1,6 @@
 package net.felder.attendeesorter;
 
 import com.google.common.base.Strings;
-import net.felder.Constants;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -27,7 +26,7 @@ public class AttendeeSorter {
 
     public static void main(String... args) throws Exception {
         createAndStartStreams();
-        consumeFromTopicHowManyRecords(Constants.ATTENDEES_BY_FIRST_NAME_TOPIC, 10000);
+        consumeFromTopicHowManyRecords(AttendeeSorterConstants.ATTENDEES_BY_FIRST_NAME_TOPIC, 10000);
         closeStreams();
     }
 
@@ -50,7 +49,7 @@ public class AttendeeSorter {
     public static void createAndStartStreams() {
         KStreamBuilder builder = new KStreamBuilder();
 
-        KStream<String, String> source = builder.stream(Constants.ATTENDEE_INPUT_TOPIC);
+        KStream<String, String> source = builder.stream("attendees_in");
 
         // Concatenate names onto the end of the key.
         /*
@@ -78,7 +77,7 @@ public class AttendeeSorter {
                 // Convert values to String for processing.
                 .mapValues((value) -> Strings.padStart(value.toString(), 4, '0'));
         KStream<String, String> attendeesByFirstNameSum = attendeesByFirstNameSumTable.toStream();
-        attendeesByFirstNameSum.to(Constants.ATTENDEES_BY_FIRST_NAME_TOPIC);
+        attendeesByFirstNameSum.to(AttendeeSorterConstants.ATTENDEES_BY_FIRST_NAME_TOPIC);
 
         streams = new KafkaStreams(builder, streamCountProperties());
         streams.start();

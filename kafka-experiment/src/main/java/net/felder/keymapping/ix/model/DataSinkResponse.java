@@ -1,4 +1,4 @@
-package net.felder.keymapping;
+package net.felder.keymapping.ix.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class DataSinkResponse {
 
     private DataSinkResponse(DataSinkRequest theRequest) {
         this.requestId = theRequest.getRequestId();
-        this.items = new ArrayList<>(theRequest.getItems().size());
+        this.items = new ArrayList<>(theRequest.getItemKeys().length);
     }
 
     public UUID getRequestId() {

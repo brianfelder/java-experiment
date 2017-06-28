@@ -1,6 +1,7 @@
-package net.felder.keymapping;
+package net.felder.keymapping.ix.serdes;
 
-import net.felder.keymapping.udsclient.Person;
+
+import net.felder.keymapping.ix.model.IxRecordKey;
 
 /**
  * Created by cezargrzelak on 6/7/17.
