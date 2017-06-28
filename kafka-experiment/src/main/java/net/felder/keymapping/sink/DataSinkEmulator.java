@@ -20,7 +20,7 @@ public class DataSinkEmulator {
             DataSinkResponseItem.Status itemStatus =
                     (i % 4 == 0) ? DataSinkResponseItem.Status.Error : DataSinkResponseItem.Status.Ok;
             DataSinkResponseItem responseItem = new DataSinkResponseItem(currentRecordKey, itemStatus);
-            toReturn.addItem(responseItem);
+            toReturn.setItemAtIndex(responseItem, i);
         }
         return toReturn;
     }

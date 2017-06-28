@@ -31,4 +31,11 @@ public class DataSinkRequest {
     public IxRecordKey[] getItemKeys() {
         return itemKeys;
     }
+
+    public int itemCount() {
+        if (this.itemKeys == null) {
+            return 0;
+        }
+        return this.itemKeys.length;
+    }
 }

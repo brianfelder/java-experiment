@@ -1,21 +1,9 @@
 package net.felder.keymapping.ix;
 
-import com.cvent.extensions.DataSet;
-import com.cvent.extensions.Row;
-import net.felder.keymapping.ix.model.IxRecord;
-import net.felder.keymapping.ix.model.IxRecordKey;
-import net.felder.keymapping.source.UdsClient;
-import net.felder.keymapping.ix.util.Constants;
-import net.felder.keymapping.ix.util.EntityFieldCache;
-import net.felder.keymapping.ix.util.RowHelper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsConfig;
 
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -26,6 +14,7 @@ public class IxKafkaProducer {
     public static void main(String[] args) {
         // Setup the topic splitter, that will listen to ix_global and split messages into
         setupTopicSplitter();
+        /*
         try (Producer<IxRecordKey, IxRecord> producer = new KafkaProducer<>(getProducerProperties())) {
             DataSet dataSet = UdsClient.getInstance().fetchResults(0, Constants.UDS_PAGE_SIZE);
             EntityFieldCache fieldCache = EntityFieldCache.of(Constants.SOURCE_SYSTEM_NAME);
@@ -52,12 +41,12 @@ public class IxKafkaProducer {
                 System.out.println("Sent: " + recordKey.toString() + " to topic: " + Constants.IX_FROM_SOURCE_TOPIC);
             }
         }
-        // TODO: Set up Stream to split out the messages on main topic into two topics:
-        // 1) Messages going to the DataSink, and 2) Message acks from the DataSink.
+        */
     }
 
     public static void setupTopicSplitter() {
-
+        // TODO: Set up Stream to split out the messages on main topic into two topics:
+        // 1) Messages going to the DataSink, and 2) Message acks from the DataSink.
     }
 
     public static Properties getProducerProperties() {

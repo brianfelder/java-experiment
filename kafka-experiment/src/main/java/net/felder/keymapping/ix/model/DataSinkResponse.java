@@ -1,7 +1,5 @@
 package net.felder.keymapping.ix.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -10,7 +8,7 @@ import java.util.UUID;
 public class DataSinkResponse {
 
     private UUID requestId;
-    private List<DataSinkResponseItem> items;
+    private DataSinkResponseItem[] items;
 
     public static DataSinkResponse from(DataSinkRequest theRequest) {
         DataSinkResponse toReturn = new DataSinkResponse(theRequest);
@@ -19,14 +17,21 @@ public class DataSinkResponse {
 
     private DataSinkResponse(DataSinkRequest theRequest) {
         this.requestId = theRequest.getRequestId();
-        this.items = new ArrayList<>(theRequest.getItemKeys().length);
+        this.items = new DataSinkResponseItem[theRequest.getItemKeys().length];
     }
 
     public UUID getRequestId() {
         return requestId;
     }
 
-    public void addItem(DataSinkResponseItem responseItem) {
-        items.add(responseItem);
+    public void setItemAtIndex(DataSinkResponseItem responseItem, int index) {
+        this.items[index] = responseItem;
+    }
+
+    public int itemCount() {
+        if (this.items == null) {
+            return 0;
+        }
+        return this.items.length;
     }
 }
