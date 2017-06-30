@@ -25,6 +25,7 @@ import java.util.UUID;
 /**
  * Created by bfelder on 6/26/17.
  */
+@Deprecated
 public class IxKafkaConsumer {
     private static Scanner in;
     private static boolean stop = false;

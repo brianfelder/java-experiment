@@ -8,9 +8,13 @@ import net.felder.keymapping.ix.model.IxRecord;
 import net.felder.keymapping.ix.model.IxRecordKey;
 import net.felder.keymapping.ix.util.Constants;
 import net.felder.keymapping.ix.util.KafkaConsumerThreadBase;
+import net.felder.keymapping.ix.util.KafkaProducerHelper;
 import net.felder.keymapping.ix.util.KeyLookupFunctions;
 import net.felder.keymapping.sink.SduSkeleton;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +80,26 @@ public class IxEngine {
         protected void finishRecordBatch(UUID recordBatchId) {
             List<Map.Entry<IxPipelineKey, IxRecord>> ixRecordsForThisBatch = ixRecordsInBatch.get(recordBatchId);
             System.out.println("finishRecordBatch");
-            // TODO: Send these to Kafka here.
+            this.toKafka(ixRecordsForThisBatch);
+        }
+
+        protected void toKafka(List<Map.Entry<IxPipelineKey, IxRecord>> ixRecordsForABatch) {
+            try (Producer<IxRecordKey, IxRecord> producer =
+                    new KafkaProducer<>(KafkaProducerHelper.getProducerProperties())) {
+                for (int i = 0; i < ixRecordsForABatch.size(); i++) {
+                    Map.Entry<IxPipelineKey, IxRecord> currentEntry = ixRecordsForABatch.get(i);
+                    IxPipelineKey pipelineKey = currentEntry.getKey();
+                    IxRecordKey targetKey = pipelineKey.getTargetKey();
+                    IxRecord targetRecord = currentEntry.getValue();
+                    ProducerRecord<IxRecordKey, IxRecord> theProducerRecord = new ProducerRecord<>(
+                            Constants.IX_ITEMS_TO_SINK_TOPIC,
+                            targetKey,
+                            targetRecord);
+                    producer.send(theProducerRecord);
+                    System.out.println("Sent: " + targetKey.toString() +
+                            " to topic: " + Constants.IX_ITEMS_TO_SINK_TOPIC);
+                }
+            }
         }
     }
 }

@@ -7,9 +7,11 @@ import java.util.Properties;
 /**
  * Created by bfelder on 6/29/17.
  */
-public class KafkaProducerBase {
-
-
+public final class KafkaProducerHelper {
+    private KafkaProducerHelper() {
+        super();
+    }
+    
     public static Properties getProducerProperties() {
         Properties props = new Properties();
         props.put("bootstrap.servers", "localhost:9092");

@@ -4,22 +4,16 @@ import com.cvent.extensions.DataSet;
 import com.cvent.extensions.Row;
 import net.felder.keymapping.ix.model.IxRecord;
 import net.felder.keymapping.ix.model.IxRecordKey;
-import net.felder.keymapping.ix.serdes.IxRecordKeySerde;
-import net.felder.keymapping.ix.serdes.KafkaJsonSerializer;
 import net.felder.keymapping.ix.util.Constants;
 import net.felder.keymapping.ix.util.EntityFieldCache;
-import net.felder.keymapping.ix.util.IxPartitioner;
+import net.felder.keymapping.ix.util.KafkaProducerHelper;
 import net.felder.keymapping.ix.util.RowHelper;
 import net.felder.keymapping.source.UdsSkeleton;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.streams.StreamsConfig;
 
 import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
 
 /**
  * Created by bfelder on 6/26/17.
@@ -29,7 +23,7 @@ public class IxDataSourceHandler {
     public static void main(String[] args) {
         // Setup the topic splitter, that will listen to ix_global and split messages into
         setupTopicSplitter();
-        try (Producer<IxRecordKey, IxRecord> producer = new KafkaProducer<>(getProducerProperties())) {
+        try (Producer<IxRecordKey, IxRecord> producer = new KafkaProducer<>(KafkaProducerHelper.getProducerProperties())) {
             // TODO: This will need to be dynamically generated via Jobs, but whatever.
             UdsSkeleton udsSkeleton = new UdsSkeleton();
             DataSet dataSet = udsSkeleton.requestData(Constants.AUTH_KEY,
@@ -65,14 +59,4 @@ public class IxDataSourceHandler {
         // 1) Messages going to the DataSink, and 2) Message acks from the DataSink.
     }
 
-    public static Properties getProducerProperties() {
-        Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
-        props.put("acks", "all");
-        props.put("retries", 0);
-        props.put("key.serializer", KafkaJsonSerializer.class.getName());
-        props.put("value.serializer", KafkaJsonSerializer.class.getName());
-        props.put("partitioner.class", IxPartitioner.class.getName());
-        return props;
-    }
 }

@@ -26,6 +26,10 @@ public class DataSinkResponse {
         this.items[index] = responseItem;
     }
 
+    public DataSinkResponseItem getItemAtIndex(int index) {
+        return this.items[index];
+    }
+
     public int itemCount() {
         if (this.items == null) {
             return 0;

@@ -23,6 +23,9 @@ public class IxDataSet extends DataSet {
     }
 
     public static IxDataSet from(DataSet dataSet) {
+        if (IxDataSet.class.isAssignableFrom(dataSet.getClass())) {
+            return (IxDataSet) dataSet;
+        }
         IxDataSet toReturn = new IxDataSet((int) (long) dataSet.getTotal());
         toReturn.setTotal(dataSet.getTotal());
         toReturn.setFields(new ArrayList(dataSet.getFields()));
