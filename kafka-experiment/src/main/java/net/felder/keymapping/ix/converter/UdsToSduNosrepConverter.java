@@ -1,11 +1,11 @@
 package net.felder.keymapping.ix.converter;
 
 import com.cvent.extensions.Row;
-import com.google.common.base.Objects;
 import net.felder.keymapping.ix.model.Converter;
 import net.felder.keymapping.ix.model.IxPipelineKey;
 import net.felder.keymapping.ix.model.IxRecord;
 import net.felder.keymapping.ix.model.IxRecordKey;
+import net.felder.keymapping.ix.model.OrderedPair;
 import net.felder.keymapping.ix.util.KeyLookupFunctions;
 
 import java.util.Arrays;
@@ -22,7 +22,7 @@ public class UdsToSduNosrepConverter implements Converter {
     private String TARGET_TYPE = "nosrep";
 
     @Override
-    public Map.Entry<IxPipelineKey, IxRecord> convert(Map<IxRecordKey, IxRecord> sourceItems) {
+    public OrderedPair<IxPipelineKey, IxRecord> convert(Map<IxRecordKey, IxRecord> sourceItems) {
         IxPipelineKey returnPipelineKey = new IxPipelineKey();
         returnPipelineKey.setConverterClassName(this.getClass().getName());
         IxRecord returnIxRecord = null;
@@ -36,7 +36,7 @@ public class UdsToSduNosrepConverter implements Converter {
                 returnIxRecord = this.convertFrom(sourceKey, sourceValue);
             }
         }
-        Map.Entry toReturn = this.from(returnPipelineKey, returnIxRecord);
+        OrderedPair<IxPipelineKey, IxRecord> toReturn = new OrderedPair<>(returnPipelineKey, returnIxRecord);
         return toReturn;
     }
 
@@ -51,37 +51,6 @@ public class UdsToSduNosrepConverter implements Converter {
         );
         newRow.setValues(rowValues);
         IxRecord toReturn = new IxRecord(TARGET_TYPE, newRow);
-        return toReturn;
-    }
-
-    private Map.Entry<IxPipelineKey, IxRecord> from(final IxPipelineKey pipelineKey, final IxRecord record) {
-        // TODO: Blech.
-        Map.Entry<IxPipelineKey, IxRecord> toReturn = new Map.Entry<IxPipelineKey, IxRecord>() {
-            @Override
-            public IxPipelineKey getKey() {
-                return pipelineKey;
-            }
-
-            @Override
-            public IxRecord getValue() {
-                return record;
-            }
-
-            @Override
-            public IxRecord setValue(IxRecord value) {
-                return value;
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                return this.hashCode() == o.hashCode();
-            }
-
-            @Override
-            public int hashCode() {
-                return Objects.hashCode(pipelineKey, record);
-            }
-        };
         return toReturn;
     }
 }
