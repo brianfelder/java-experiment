@@ -46,7 +46,7 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic kafkaFir
 
 Our constructs:
 * Job: One per event-integration. (~1000 per month? And how many concurrently?)
-** Path: One per job per Type. (~3 per Job)
+** Path: One per job per Type. (~3 per Job) CamelContext lives at this level.
 *** Route: Three per path (from, mid, to)
 
 Options for mapping:
@@ -62,5 +62,45 @@ One Topic per Route (three total, system-wide: From, Mid, To)
 One Topic, system-wide
 ** Consumers would filter by Job, Path, and Route.
 
-
 Look into CQRS
+
+
+Partition per Job
+Topic per Path per Route (Job + Type + 2)A
+
+
+Partitions are created when you create the topic. You specify how many partitions are on the topic.
+Partitions are assigned to specific consumers within a consumer group by Zookeeper.
+Consumer group polls a topic.
+Zookeeper assigns one or more partitions to the particular consumer within the group.
+No more than one consumer within the group will get the same partition.
+
+Analogy:
+Topic is a directory. Contains log files, one partition.
+Consumer subscribes to the topic as part of a consumer group. The Consumer gets assigned a set of pointers to a set of files.
+Only one consumer gets
+
+
+Message Decider (within a Job):
+Kafka:whatever
+direct:fromStart
+
+From:
+direct:fromStart
+direct:fromEnd
+
+------------
+
+Scheduler + resource manager:
+mesos
+yarn
+
+Scheduler:
+nirmata
+
+Kafka Streams:
+Flink
+
+kstreams library
+
+

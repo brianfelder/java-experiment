@@ -19,9 +19,12 @@ public class CamelKafkaConsumerRunner extends CamelConsumerRunnerBase {
         // That particular parameter caused David's and Cezar's machine to slow down on some reads,
         // taking like 5 seconds rather than 100ms. Cezar found that increasing that number
         // (here, to 64k, which is the default for Kafka) mitigated that behavior.
-        return "kafka://localhost:9092?topic=kafkaFirst"
+        return "kafka://localhost:9092?"
+                + "topic=attTopic"
                 + "&groupId=myGroup::" + UUID.randomUUID().toString()
                 + "&autoOffsetReset=earliest"
+                + "&pollTimeoutMs=1000"
+                + "&valueDeserializer=net.felder.AttendeeDeserializer"
                 + "&receiveBufferBytes=65536";
     }
 }

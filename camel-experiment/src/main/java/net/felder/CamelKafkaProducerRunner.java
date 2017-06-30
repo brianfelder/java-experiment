@@ -10,13 +10,12 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.processor.aggregate.AggregationStrategy;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by bfelder on 6/1/17.
  */
 public class CamelKafkaProducerRunner {
-    private static final int MESSAGES_TO_SEND = 100_000_000;
+    private static final int MESSAGES_TO_SEND = 10_000_000;
     private static final int MESSAGE_OUTPUT_FREQUENCY = 10_000;
 
     public static void main(String[] args) throws Exception {
@@ -32,8 +31,8 @@ public class CamelKafkaProducerRunner {
         ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
         producerTemplate.setDefaultEndpointUri("direct:start");
         for (int i = 0; i < MESSAGES_TO_SEND; i++) {
-            Date currentDate = new Date();
-            producerTemplate.sendBody("msg #" + i + " " + currentDate.toString());
+            Attendee toSend = new Attendee("Brian", "Felder" + Integer.valueOf(i));
+            producerTemplate.sendBody(toSend);
         }
     }
 
@@ -77,12 +76,10 @@ public class CamelKafkaProducerRunner {
                         .aggregate(constant(true), new ArrayListAggregationStrategy())
                         .completionSize(1000)
                         .completionTimeout(5000)
-                        .to("kafka://localhost:9092?topic=kafkaFirst"
-                                // + "&producerBatchSize=200000"
-                                // + "&lingerMs=5"
-                                // + "&maxInFlightRequest=1000"
-                        )
                         .process(messagesTimingProcessor)
+                        .to("kafka://localhost:9092?topic=attTopic"
+                                + "&serializerClass=net.felder.KafkaJsonSerializer"
+                        )
                 // .to("mock:result")
                 ;
             }
