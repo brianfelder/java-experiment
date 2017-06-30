@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mvn package exec:java -Dexec.mainClass="net.felder.keymapping.ix.engine.IxEngine"
+mvn exec:java -Dexec.mainClass="net.felder.keymapping.ix.engine.IxEngine"

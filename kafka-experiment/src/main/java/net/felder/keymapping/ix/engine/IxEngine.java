@@ -1,7 +1,9 @@
 package net.felder.keymapping.ix.engine;
 
 import com.google.common.collect.ImmutableMap;
-import net.felder.keymapping.ix.converter.UdsToSduNosrepConverter;
+import net.felder.keymapping.ix.config.typemap.ConverterTypeMap;
+import net.felder.keymapping.ix.config.typemap.ConverterTypeMapLookup;
+import net.felder.keymapping.ix.model.Converter;
 import net.felder.keymapping.ix.model.IxPipelineKey;
 import net.felder.keymapping.ix.model.IxRecord;
 import net.felder.keymapping.ix.model.IxRecordKey;
@@ -62,7 +64,21 @@ public class IxEngine {
             System.out.println("  Got: " + sourceKey.toString() + " from topic: " + this.getTopicName());
             IxRecordKey targetKey = KeyLookupFunctions.targetKeysFor(sourceKey).get(0);
             System.out.println("    Adding: " + targetKey.toString() + " to send to dataSink.");
-            UdsToSduNosrepConverter converter = new UdsToSduNosrepConverter();
+
+            // TODO: We might want to do this lookup once, based on the job.
+            ConverterTypeMap converterTypeMap =
+                    ConverterTypeMapLookup.getInstance()
+                            .converterTypeMapFor(sourceKey.getSystemName(), targetKey.getSystemName());
+            String converterClassName = converterTypeMap.converterClassFor(targetKey.getItemType());
+            Class converterClass = null;
+            Converter converter = null;
+            try {
+                converterClass = Class.forName(converterClassName);
+                converter = (Converter) converterClass.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
             Map.Entry<IxPipelineKey, IxRecord> convertResult =
                     converter.convert(ImmutableMap.of(sourceKey, sourceRecord));
             ixRecordsForThisBatch.add(convertResult);

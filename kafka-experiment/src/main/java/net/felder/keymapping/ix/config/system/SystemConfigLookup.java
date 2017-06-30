@@ -8,7 +8,7 @@ import java.util.Map;
  * Created by bfelder on 6/30/17.
  */
 public class SystemConfigLookup {
-    private final Map<String, SystemConfig> systemConfigMap;
+    private final Map<String, SystemConfig> lookupMap;
 
     private static final SystemConfigLookup INSTANCE = new SystemConfigLookup();
     public static SystemConfigLookup getInstance() {
@@ -16,13 +16,13 @@ public class SystemConfigLookup {
     }
 
     private SystemConfigLookup() {
-        this.systemConfigMap = ImmutableMap.of(
+        this.lookupMap = ImmutableMap.of(
                 "sdU", new SduConfig(),
                 "Uds", new UdsConfig()
         );
     }
 
     public SystemConfig configFor(String systemName) {
-        return systemConfigMap.get(systemName);
+        return lookupMap.get(systemName);
     }
 }

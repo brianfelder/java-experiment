@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by bfelder on 6/29/17.
  */
-public class UdsToSdu {
+public class UdsToSduConverterTypeMap implements ConverterTypeMap {
 
     public List<String> sourceTypesRequiredToCreate(String targetType) {
         if ("nosrep".equals(targetType)) {
