@@ -33,7 +33,6 @@ public class IxEngine {
 
         IxEngine.ConsumerThread consumerRunnable = new IxEngine.ConsumerThread(sourceTopicName, consumerGroupId);
         consumerRunnable.start();
-        consumerRunnable.getKafkaConsumer().wakeup();
         System.out.println("Stopping consumer .....");
         consumerRunnable.join();
     }

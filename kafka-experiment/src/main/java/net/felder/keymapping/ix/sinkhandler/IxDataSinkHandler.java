@@ -32,7 +32,6 @@ public class IxDataSinkHandler {
         IxDataSinkHandler.ConsumerThread consumerRunnable =
                 new IxDataSinkHandler.ConsumerThread(sourceTopicName, consumerGroupId);
         consumerRunnable.start();
-        consumerRunnable.getKafkaConsumer().wakeup();
         System.out.println("Stopping consumer .....");
         consumerRunnable.join();
     }
