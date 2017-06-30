@@ -23,7 +23,7 @@ public abstract class KafkaConsumerThreadBase extends Thread {
     private String topicName;
     private String groupId;
     private long sleepTime = 1000;
-    private int loopCount = 30;
+    private int loopCount = 60;
     private KafkaConsumer<IxRecordKey, IxRecord> kafkaConsumer;
 
     public String getTopicName() {

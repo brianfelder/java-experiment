@@ -41,7 +41,6 @@ public class IxDataSinkHandler {
         private SduSkeleton dataSink;
         private SduConfig targetConfig;
         private Map<UUID, IxDataSet> dataSetForBatch;
-        private long rowCount = 0L;
 
         public ConsumerThread(String sourceTopicName, String consumerGroupId) {
             this.setTopicName(sourceTopicName);
@@ -68,7 +67,6 @@ public class IxDataSinkHandler {
             dataSetForThisBatch.getRowRecordKeys().add(key);
             dataSetForThisBatch.setFields(targetConfig.fieldsFor(key.getItemType()));
             System.out.println("    Processed record: " + key);
-            this.rowCount++;
         }
 
         @Override
@@ -76,7 +74,7 @@ public class IxDataSinkHandler {
             // TODO: Goal is to put all of these things into a DataSet, and send it to the SduSkeleton
             // for processing.
             IxDataSet dataSetForThisBatch = dataSetForBatch.get(recordBatchId);
-            dataSetForThisBatch.setTotal(this.rowCount);
+            dataSetForThisBatch.setTotal(Integer.toUnsignedLong(dataSetForThisBatch.getRows().size()));
             System.out.println("finishRecordBatch");
             this.handleAcks(dataSetForThisBatch, recordBatchId);
         }
