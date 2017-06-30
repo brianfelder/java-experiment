@@ -29,7 +29,7 @@ public class IxEngine {
 
     public static void main(String[] argv) throws Exception {
         String sourceTopicName = Constants.IX_ITEMS_FROM_SOURCE_TOPIC;
-        String consumerGroupId = UUID.randomUUID().toString();
+        String consumerGroupId = Constants.CONSUMER_GROUP_ID;
 
         IxEngine.ConsumerThread consumerRunnable = new IxEngine.ConsumerThread(sourceTopicName, consumerGroupId);
         consumerRunnable.start();

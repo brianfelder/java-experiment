@@ -33,17 +33,18 @@ public class UdsToSduNosrepConverter implements Converter {
             IxRecordKey targetKey = KeyLookupFunctions.targetKeysFor(sourceKey).get(0);
             if (TARGET_TYPE.equals(targetKey.getItemType())) {
                 returnPipelineKey.setTargetKey(targetKey);
-                returnIxRecord = this.convertFrom(sourceValue);
+                returnIxRecord = this.convertFrom(sourceKey, sourceValue);
             }
         }
         Map.Entry toReturn = this.from(returnPipelineKey, returnIxRecord);
         return toReturn;
     }
 
-    private IxRecord convertFrom(IxRecord sourceRecord) {
+    private IxRecord convertFrom(IxRecordKey sourceKey, IxRecord sourceRecord) {
+        IxRecordKey targetKey = KeyLookupFunctions.targetKeysFor(sourceKey).get(0);
         Row newRow = new Row();
         List<Object> rowValues = Arrays.asList(
-                sourceRecord.getRow().getValues().get(0),
+                targetKey.getItemId(),
                 sourceRecord.getRow().getValues().get(1),
                 sourceRecord.getRow().getValues().get(2),
                 sourceRecord.getRow().getValues().get(3)

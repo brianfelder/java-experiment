@@ -27,7 +27,7 @@ public class IxDataSinkHandler {
 
     public static void main(String[] argv) throws Exception {
         String sourceTopicName = Constants.IX_ITEMS_TO_SINK_TOPIC;
-        String consumerGroupId = UUID.randomUUID().toString();
+        String consumerGroupId = Constants.CONSUMER_GROUP_ID;
 
         IxDataSinkHandler.ConsumerThread consumerRunnable =
                 new IxDataSinkHandler.ConsumerThread(sourceTopicName, consumerGroupId);

@@ -9,6 +9,7 @@ public class Constants {
     public static final String IX_ITEMS_TO_SINK_TOPIC = "ix_items_to_sink";
     public static final String IX_ACKS_FROM_SINK_TOPIC = "ix_acks_from_sink";
     public static final String IX_KNOWN_FROM_SINK_TOPIC = "ix_known_from_sink";
+    public static final String CONSUMER_GROUP_ID = "ix_consumer_group";
 
     public static final String JOB_ID = "123XYZ";
     public static final String SOURCE_SYSTEM_NAME = "Uds";

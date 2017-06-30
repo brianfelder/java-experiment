@@ -52,7 +52,7 @@ public final class KeyLookupFunctions {
         return toReturn;
     }
 
-    private static String reverse(String aString) {
+    public static String reverse(String aString) {
         return new StringBuilder(aString).reverse().toString();
     }
 }
