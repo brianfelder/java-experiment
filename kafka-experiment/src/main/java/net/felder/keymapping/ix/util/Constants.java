@@ -13,6 +13,8 @@ public class Constants {
     public static final String JOB_ID = "123XYZ";
     public static final String SOURCE_SYSTEM_NAME = "Uds";
     public static final String SOURCE_ITEM_TYPE = "person";
+    public static final String TARGET_SYSTEM_NAME = "sdU";
+    public static final String TARGET_ITEM_TYPE = "nosrep";
 
     public static final String AUTH_KEY = "YadaYadaYada";
 
