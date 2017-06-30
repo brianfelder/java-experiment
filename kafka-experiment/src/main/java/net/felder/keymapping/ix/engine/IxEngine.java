@@ -1,13 +1,15 @@
 package net.felder.keymapping.ix.engine;
 
 import com.google.common.collect.ImmutableMap;
+import net.felder.keymapping.ix.config.system.SystemConfig;
+import net.felder.keymapping.ix.config.system.SystemConfigLookup;
 import net.felder.keymapping.ix.config.typemap.ConverterTypeMap;
 import net.felder.keymapping.ix.config.typemap.ConverterTypeMapLookup;
 import net.felder.keymapping.ix.model.Converter;
 import net.felder.keymapping.ix.model.IxPipelineKey;
 import net.felder.keymapping.ix.model.IxRecord;
 import net.felder.keymapping.ix.model.IxRecordKey;
-import net.felder.keymapping.ix.model.OrderedPair;
+import net.felder.keymapping.ix.model.Pair;
 import net.felder.keymapping.ix.util.Constants;
 import net.felder.keymapping.ix.util.KafkaConsumerThreadBase;
 import net.felder.keymapping.ix.util.KafkaProducerHelper;
@@ -40,7 +42,7 @@ public class IxEngine {
 
     private static class ConsumerThread extends KafkaConsumerThreadBase {
 
-        private Map<UUID, List<OrderedPair<IxPipelineKey, IxRecord>>> ixRecordsInBatch;
+        private Map<UUID, List<Pair<IxPipelineKey, IxRecord>>> ixRecordsInBatch;
 
         public ConsumerThread(String sourceTopicName, String consumerGroupId) {
             this.setTopicName(sourceTopicName);
@@ -50,14 +52,14 @@ public class IxEngine {
 
         @Override
         protected void startRecordBatch(UUID recordBatchId, Long batchCount) {
-            List<OrderedPair<IxPipelineKey, IxRecord>> ixRecordsForThisBatch = new ArrayList<>();
+            List<Pair<IxPipelineKey, IxRecord>> ixRecordsForThisBatch = new ArrayList<>();
             ixRecordsInBatch.put(recordBatchId, ixRecordsForThisBatch);
         }
 
         @Override
         protected void processRecordForBatch(UUID recordBatchId, ConsumerRecord<IxRecordKey, IxRecord> consumerRecord,
                 int rowNum) {
-            List<OrderedPair<IxPipelineKey, IxRecord>> ixRecordsForThisBatch = ixRecordsInBatch.get(recordBatchId);
+            List<Pair<IxPipelineKey, IxRecord>> ixRecordsForThisBatch = ixRecordsInBatch.get(recordBatchId);
             IxRecord sourceRecord = consumerRecord.value();
             IxRecordKey sourceKey = consumerRecord.key();
             System.out.println("Record: " + sourceKey);
@@ -80,24 +82,30 @@ public class IxEngine {
                 throw new RuntimeException(e);
             }
 
-            OrderedPair<IxPipelineKey, IxRecord> convertResult =
-                    converter.convert(ImmutableMap.of(sourceKey, sourceRecord));
+            SystemConfig systemConfig = SystemConfigLookup.getInstance().configFor(sourceKey.getSystemName());
+            Pair<IxPipelineKey, IxRecord> convertResult =
+                    converter.convert(ImmutableMap.of(
+                            sourceKey, sourceRecord),
+                            ImmutableMap.of(
+                                    sourceKey.getItemType(),
+                                    systemConfig.metadataFor(sourceKey.getItemType())
+                            ));
             ixRecordsForThisBatch.add(convertResult);
             System.out.println("    Processed record: " + targetKey);
         }
 
         @Override
         protected void finishRecordBatch(UUID recordBatchId) {
-            List<OrderedPair<IxPipelineKey, IxRecord>> ixRecordsForThisBatch = ixRecordsInBatch.get(recordBatchId);
+            List<Pair<IxPipelineKey, IxRecord>> ixRecordsForThisBatch = ixRecordsInBatch.get(recordBatchId);
             System.out.println("finishRecordBatch");
             this.toKafka(ixRecordsForThisBatch);
         }
 
-        protected void toKafka(List<OrderedPair<IxPipelineKey, IxRecord>> ixRecordsForABatch) {
+        protected void toKafka(List<Pair<IxPipelineKey, IxRecord>> ixRecordsForABatch) {
             try (Producer<IxRecordKey, IxRecord> producer =
                     new KafkaProducer<>(KafkaProducerHelper.getProducerProperties())) {
                 for (int i = 0; i < ixRecordsForABatch.size(); i++) {
-                    OrderedPair<IxPipelineKey, IxRecord> currentEntry = ixRecordsForABatch.get(i);
+                    Pair<IxPipelineKey, IxRecord> currentEntry = ixRecordsForABatch.get(i);
                     IxPipelineKey pipelineKey = currentEntry.getItem1();
                     IxRecordKey targetKey = pipelineKey.getTargetKey();
                     IxRecord targetRecord = currentEntry.getItem2();

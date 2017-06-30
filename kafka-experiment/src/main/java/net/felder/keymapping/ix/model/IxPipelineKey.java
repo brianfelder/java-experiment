@@ -11,6 +11,7 @@ public class IxPipelineKey {
     private IxRecordKey targetKey;
     private String converterClassName;
 
+    // TODO: Make IxPipelineKey and IxRecordKey immutable.
     public List<IxRecordKey> getSourceKeys() {
         return sourceKeys;
     }

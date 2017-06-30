@@ -32,7 +32,6 @@ public class UdsConfig implements SystemConfig {
             toReturn.setEntityName(type);
             toReturn.setFields(this.fieldsFor(type));
             toReturn.setEqualityFields(ImmutableList.of("first", "last", "email"));
-            toReturn.setEntityName(type);
             toReturn.setIdentityField("id");
         }
         return toReturn;

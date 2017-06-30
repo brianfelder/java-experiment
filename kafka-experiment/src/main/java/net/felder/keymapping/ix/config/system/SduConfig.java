@@ -32,7 +32,6 @@ public class SduConfig implements SystemConfig {
             toReturn.setEntityName(type);
             toReturn.setFields(this.fieldsFor(type));
             toReturn.setEqualityFields(ImmutableList.of("firstName", "lastName", "emailAddress"));
-            toReturn.setEntityName(type);
             toReturn.setIdentityField("id");
         }
         return toReturn;

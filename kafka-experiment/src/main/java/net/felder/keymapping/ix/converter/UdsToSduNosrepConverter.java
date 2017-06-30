@@ -1,11 +1,12 @@
 package net.felder.keymapping.ix.converter;
 
 import com.cvent.extensions.Row;
+import net.felder.keymapping.ix.config.system.EntityMetadata;
 import net.felder.keymapping.ix.model.Converter;
 import net.felder.keymapping.ix.model.IxPipelineKey;
 import net.felder.keymapping.ix.model.IxRecord;
 import net.felder.keymapping.ix.model.IxRecordKey;
-import net.felder.keymapping.ix.model.OrderedPair;
+import net.felder.keymapping.ix.model.Pair;
 import net.felder.keymapping.ix.util.KeyLookupFunctions;
 
 import java.util.Arrays;
@@ -22,7 +23,9 @@ public class UdsToSduNosrepConverter implements Converter {
     private String TARGET_TYPE = "nosrep";
 
     @Override
-    public OrderedPair<IxPipelineKey, IxRecord> convert(Map<IxRecordKey, IxRecord> sourceItems) {
+    public Pair<IxPipelineKey, IxRecord> convert(
+            Map<IxRecordKey, IxRecord> sourceItems,
+            Map<String, EntityMetadata> sourceMetadataMap) {
         IxPipelineKey returnPipelineKey = new IxPipelineKey();
         returnPipelineKey.setConverterClassName(this.getClass().getName());
         IxRecord returnIxRecord = null;
@@ -36,7 +39,8 @@ public class UdsToSduNosrepConverter implements Converter {
                 returnIxRecord = this.convertFrom(sourceKey, sourceValue);
             }
         }
-        OrderedPair<IxPipelineKey, IxRecord> toReturn = new OrderedPair<>(returnPipelineKey, returnIxRecord);
+        // TODO: if returnIxRecord is null, return null;
+        Pair<IxPipelineKey, IxRecord> toReturn = new Pair<>(returnPipelineKey, returnIxRecord);
         return toReturn;
     }
 

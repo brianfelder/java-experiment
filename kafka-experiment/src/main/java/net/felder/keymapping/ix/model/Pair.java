@@ -6,11 +6,11 @@ import com.google.common.base.Objects;
  * Created by bfelder on 6/30/17.
  * Pair, where the position of the elements matters for equality.
  */
-public class OrderedPair<T1, T2> {
+public class Pair<T1, T2> {
     private T1 item1;
     private T2 item2;
 
-    public OrderedPair(T1 item1, T2 item2) {
+    public Pair(T1 item1, T2 item2) {
         this.item1 = item1;
         this.item2 = item2;
     }
@@ -32,7 +32,7 @@ public class OrderedPair<T1, T2> {
     }
 
     /**
-     * In this OrderedPair, the position of the elements matters for equality.
+     * In this Pair, the position of the elements matters for equality.
      * @return
      */
     @Override
