@@ -1,19 +1,23 @@
-package net.felder.keymapping.ix;
+package net.felder.keymapping.ix.sinkhandler;
 
-import net.felder.keymapping.ix.model.DataSinkRequest;
-import net.felder.keymapping.ix.model.DataSinkResponse;
+import com.cvent.extensions.DataSet;
+import com.cvent.extensions.Field;
+import com.cvent.extensions.Row;
 import net.felder.keymapping.ix.model.IxRecord;
 import net.felder.keymapping.ix.model.IxRecordKey;
-import net.felder.keymapping.sink.DataSinkEmulator;
 import net.felder.keymapping.ix.util.Constants;
+import net.felder.keymapping.ix.util.EntityFieldCache;
 import net.felder.keymapping.ix.util.KeyLookupFunctions;
+import net.felder.keymapping.sink.SduSkeleton;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 
+import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.UUID;
@@ -27,7 +31,7 @@ public class IxKafkaConsumer {
 
     public static void main(String[] argv) throws Exception {
         in = new Scanner(System.in);
-        String topicName = Constants.IX_FROM_SOURCE_TOPIC;
+        String topicName = Constants.IX_ITEMS_FROM_SOURCE_TOPIC;
         String groupId = UUID.randomUUID().toString();
 
         ConsumerThread consumerRunnable = new ConsumerThread(topicName, groupId);
@@ -45,12 +49,12 @@ public class IxKafkaConsumer {
         private String topicName;
         private String groupId;
         private KafkaConsumer<IxRecordKey, IxRecord> kafkaConsumer;
-        private DataSinkEmulator dataSink;
+        private SduSkeleton dataSink;
 
         public ConsumerThread(String topicName, String groupId) {
             this.topicName = topicName;
             this.groupId = groupId;
-            dataSink = new DataSinkEmulator();
+            dataSink = new SduSkeleton();
         }
 
         public void run() {
@@ -74,17 +78,32 @@ public class IxKafkaConsumer {
                     System.out.println("Polled...");
                     if (records != null && !records.isEmpty()) {
                         System.out.println("Got some records!");
-                        DataSinkRequest request = new DataSinkRequest(UUID.randomUUID(), records.count());
+                        DataSet toSend = new DataSet();
+                        toSend.setTotal(new Long(records.count()));
                         int rowNum = 0;
                         for (ConsumerRecord<IxRecordKey, IxRecord> record : records) {
-                            System.out.println("  Got: " + record.key().toString() + " from topic: " + topicName);
-                            IxRecordKey targetKey = KeyLookupFunctions.targetKeysFor(record.key()).get(0);
+                            IxRecord sourceRecord = record.value();
+                            IxRecordKey sourceKey = record.key();
+                            // TODO: group / multiplex by JobID
+                            System.out.println("  Got: " + sourceKey.toString() + " from topic: " + topicName);
+                            IxRecordKey targetKey = KeyLookupFunctions.targetKeysFor(sourceKey).get(0);
                             System.out.println("    Adding: " + targetKey.toString() + " to send to dataSink.");
-                            request.getItemKeys()[rowNum] = targetKey;
-                            request.getItems()[rowNum] = record.value();
+                            if (toSend.getFields() == null) {
+                                // TODO: We're cheating, and using the source fields here.
+                                // We'll need to translate and use target instead.
+                                String sourceSystem = sourceKey.getSystemName();
+                                String sourceEntity = sourceKey.getItemType();
+                                List<Field> entityFields = EntityFieldCache.of(sourceSystem).getFieldsFor(sourceEntity);
+                                toSend.setFields(entityFields);
+                            }
+                            Row rowValue = sourceRecord.getRow();
+                            toSend.getRows().add(rowValue);
                             rowNum++;
                         }
-                        DataSinkResponse theResponse = dataSink.handleRequest(request);
+                        String dumpId = UUID.randomUUID().toString();
+                        Response theResponse = dataSink.dumpData(Constants.AUTH_KEY,
+                                dumpId,
+                                toSend);
                         System.out.println("Got a response: " + theResponse);
                         // TODO: Send response OK records back to Kafka. Send to the same topic and partition.
                         // But first, we need to consume from a Stream, rather than directly from the topic.

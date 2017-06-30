@@ -1,27 +1,25 @@
 package net.felder.keymapping.ix.model;
 
-import java.util.UUID;
-
 /**
  * Created by bfelder on 6/26/17.
  */
 public class DataSinkResponse {
 
-    private UUID requestId;
+    private String dataDumpId;
     private DataSinkResponseItem[] items;
 
-    public static DataSinkResponse from(DataSinkRequest theRequest) {
-        DataSinkResponse toReturn = new DataSinkResponse(theRequest);
+    public static DataSinkResponse from(String dataDumpId, int itemCount) {
+        DataSinkResponse toReturn = new DataSinkResponse(dataDumpId, itemCount);
         return toReturn;
     }
 
-    private DataSinkResponse(DataSinkRequest theRequest) {
-        this.requestId = theRequest.getRequestId();
-        this.items = new DataSinkResponseItem[theRequest.getItemKeys().length];
+    private DataSinkResponse(String dataDumpId, int itemCount) {
+        this.dataDumpId = dataDumpId;
+        this.items = new DataSinkResponseItem[itemCount];
     }
 
-    public UUID getRequestId() {
-        return requestId;
+    public String getDataDumpId() {
+        return dataDumpId;
     }
 
     public void setItemAtIndex(DataSinkResponseItem responseItem, int index) {

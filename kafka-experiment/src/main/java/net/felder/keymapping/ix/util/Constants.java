@@ -5,16 +5,16 @@ package net.felder.keymapping.ix.util;
  */
 public class Constants {
 
-    public static final String IX_GLOBAL_TOPIC = "ix_global";
-    public static final String IX_FROM_SOURCE_TOPIC = "ix_from_source";
-    public static final String IX_ACK_TOPIC = "ix_ack";
-    public static final String IX_ERROR_TOPIC = "ix_error";
+    public static final String IX_ITEMS_FROM_SOURCE_TOPIC = "ix_items_from_source";
+    public static final String IX_ITEMS_TO_SINK_TOPIC = "ix_items_to_sink";
+    public static final String IX_ACKS_FROM_SINK_TOPIC = "ix_acks_from_sink";
+    public static final String IX_KNOWN_FROM_SINK_TOPIC = "ix_known_from_sink";
 
     public static final String JOB_ID = "123XYZ";
     public static final String SOURCE_SYSTEM_NAME = "Uds";
     public static final String SOURCE_ITEM_TYPE = "person";
 
-    public static final String TARGET_ID_COLUMN_NAME = "IX.target_id";
+    public static final String AUTH_KEY = "YadaYadaYada";
 
     public static int UDS_PAGE_SIZE = 100;
 }

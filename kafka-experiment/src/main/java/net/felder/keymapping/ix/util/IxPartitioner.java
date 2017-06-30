@@ -1,4 +1,4 @@
-package net.felder.keymapping.ix;
+package net.felder.keymapping.ix.util;
 
 import net.felder.keymapping.ix.model.IxRecordKey;
 import org.apache.kafka.clients.producer.Partitioner;
