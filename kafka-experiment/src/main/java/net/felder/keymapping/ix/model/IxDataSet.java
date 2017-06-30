@@ -10,6 +10,7 @@ import java.util.List;
  * TODO: Implementing this till we have modified the DataSet.
  */
 public class IxDataSet extends DataSet {
+    private String entityName;
     private List<IxRecordKey> rowRecordKeys;
 
     public IxDataSet() {
@@ -40,5 +41,13 @@ public class IxDataSet extends DataSet {
 
     public void setRowRecordKeys(List<IxRecordKey> rowRecordKeys) {
         this.rowRecordKeys = rowRecordKeys;
+    }
+
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
     }
 }

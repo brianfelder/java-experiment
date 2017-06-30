@@ -1,7 +1,9 @@
 package net.felder.keymapping.ix.sourcehandler;
 
+import com.cvent.extensions.DataRequisitionClient;
 import com.cvent.extensions.DataSet;
 import com.cvent.extensions.Row;
+import com.google.common.collect.ImmutableMap;
 import net.felder.keymapping.ix.model.IxRecord;
 import net.felder.keymapping.ix.model.IxRecordKey;
 import net.felder.keymapping.ix.util.Constants;
@@ -19,14 +21,18 @@ import java.util.Map;
  * Created by bfelder on 6/26/17.
  */
 public class IxDataSourceHandler {
+    private static final Map<String, DataRequisitionClient> DATA_SOURCE_LOOKUP =
+            ImmutableMap.of(
+                    "Uds", new UdsSkeleton()
+            );
 
     public static void main(String[] args) {
         // Setup the topic splitter, that will listen to ix_global and split messages into
         setupTopicSplitter();
         try (Producer<IxRecordKey, IxRecord> producer = new KafkaProducer<>(KafkaProducerHelper.getProducerProperties())) {
             // TODO: This will need to be dynamically generated via Jobs, but whatever.
-            UdsSkeleton udsSkeleton = new UdsSkeleton();
-            DataSet dataSet = udsSkeleton.requestData(Constants.AUTH_KEY,
+            DataRequisitionClient dataSource = DATA_SOURCE_LOOKUP.get(Constants.SOURCE_SYSTEM_NAME);
+            DataSet dataSet = dataSource.requestData(Constants.AUTH_KEY,
                     null,
                     null,
                     null);

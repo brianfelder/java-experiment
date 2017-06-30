@@ -1,7 +1,6 @@
 package net.felder.keymapping.ix.engine;
 
 import com.google.common.collect.ImmutableMap;
-import net.felder.keymapping.ix.config.system.SduConfig;
 import net.felder.keymapping.ix.converter.UdsToSduNosrepConverter;
 import net.felder.keymapping.ix.model.IxPipelineKey;
 import net.felder.keymapping.ix.model.IxRecord;
@@ -10,7 +9,6 @@ import net.felder.keymapping.ix.util.Constants;
 import net.felder.keymapping.ix.util.KafkaConsumerThreadBase;
 import net.felder.keymapping.ix.util.KafkaProducerHelper;
 import net.felder.keymapping.ix.util.KeyLookupFunctions;
-import net.felder.keymapping.sink.SduSkeleton;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -39,16 +37,12 @@ public class IxEngine {
 
     private static class ConsumerThread extends KafkaConsumerThreadBase {
 
-        private SduSkeleton dataSink;
-        private SduConfig targetConfig;
         private Map<UUID, List<Map.Entry<IxPipelineKey, IxRecord>>> ixRecordsInBatch;
 
         public ConsumerThread(String sourceTopicName, String consumerGroupId) {
             this.setTopicName(sourceTopicName);
             this.setGroupId(consumerGroupId);
-            dataSink = new SduSkeleton();
             ixRecordsInBatch = new HashMap<>();
-            targetConfig = new SduConfig();
         }
 
         @Override

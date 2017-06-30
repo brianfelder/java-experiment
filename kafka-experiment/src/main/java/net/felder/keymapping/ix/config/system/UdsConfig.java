@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by bfelder on 6/29/17.
  */
-public class UdsConfig {
+public class UdsConfig implements SystemConfig {
     /**
      * TODO: We will need to put this into JSON config file, and include richer config info, including:
      *   identity-field: id
@@ -19,8 +19,23 @@ public class UdsConfig {
      *   depends-on: attendee (parentId)
      * @return
      */
+    @Override
     public List<String> types() {
         return ImmutableList.of("person");
+    }
+
+    @Override
+    public EntityMetadata metadataFor(String type) {
+        EntityMetadata toReturn = null;
+        if ("person".equals(type)) {
+            toReturn = new EntityMetadata();
+            toReturn.setEntityName(type);
+            toReturn.setFields(this.fieldsFor(type));
+            toReturn.setEqualityFields(ImmutableList.of("first", "last", "email"));
+            toReturn.setEntityName(type);
+            toReturn.setIdentityField("id");
+        }
+        return toReturn;
     }
 
     /**

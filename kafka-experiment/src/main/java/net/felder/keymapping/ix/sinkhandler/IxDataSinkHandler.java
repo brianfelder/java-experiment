@@ -1,6 +1,9 @@
 package net.felder.keymapping.ix.sinkhandler;
 
-import net.felder.keymapping.ix.config.system.SduConfig;
+import com.cvent.extensions.DataDumpClient;
+import com.google.common.collect.ImmutableMap;
+import net.felder.keymapping.ix.config.system.SystemConfig;
+import net.felder.keymapping.ix.config.system.SystemConfigLookup;
 import net.felder.keymapping.ix.model.DataSinkResponse;
 import net.felder.keymapping.ix.model.DataSinkResponseItem;
 import net.felder.keymapping.ix.model.IxDataSet;
@@ -24,6 +27,10 @@ import java.util.UUID;
  * Created by bfelder on 6/29/17.
  */
 public class IxDataSinkHandler {
+    private static final Map<String, DataDumpClient> DATA_SINK_LOOKUP =
+            ImmutableMap.of(
+                    "sdU", new SduSkeleton()
+            );
 
     public static void main(String[] argv) throws Exception {
         String sourceTopicName = Constants.IX_ITEMS_TO_SINK_TOPIC;
@@ -38,16 +45,12 @@ public class IxDataSinkHandler {
 
     private static class ConsumerThread extends KafkaConsumerThreadBase {
 
-        private SduSkeleton dataSink;
-        private SduConfig targetConfig;
         private Map<UUID, IxDataSet> dataSetForBatch;
 
         public ConsumerThread(String sourceTopicName, String consumerGroupId) {
             this.setTopicName(sourceTopicName);
             this.setGroupId(consumerGroupId);
-            dataSink = new SduSkeleton();
             dataSetForBatch = new HashMap<>();
-            targetConfig = new SduConfig();
         }
 
         @Override
@@ -65,14 +68,15 @@ public class IxDataSinkHandler {
             System.out.println("Record: " + key);
             dataSetForThisBatch.getRows().add(record.getRow());
             dataSetForThisBatch.getRowRecordKeys().add(key);
-            dataSetForThisBatch.setFields(targetConfig.fieldsFor(key.getItemType()));
+            // TODO: Probably redundant to set items below more than once.
+            SystemConfig targetConfig = SystemConfigLookup.getInstance().configFor(key.getSystemName());
+            dataSetForThisBatch.setFields(targetConfig.metadataFor(key.getItemType()).getFields());
+            dataSetForThisBatch.setEntityName(key.getSystemName());
             System.out.println("    Processed record: " + key);
         }
 
         @Override
         protected void finishRecordBatch(UUID recordBatchId) {
-            // TODO: Goal is to put all of these things into a DataSet, and send it to the SduSkeleton
-            // for processing.
             IxDataSet dataSetForThisBatch = dataSetForBatch.get(recordBatchId);
             dataSetForThisBatch.setTotal(Integer.toUnsignedLong(dataSetForThisBatch.getRows().size()));
             System.out.println("finishRecordBatch");
@@ -80,8 +84,8 @@ public class IxDataSinkHandler {
         }
 
         protected void handleAcks(IxDataSet dataSet, UUID recordBatchId) {
-            SduSkeleton sdu = new SduSkeleton();
-            Response theResponse = sdu.dumpData(Constants.AUTH_KEY,
+            DataDumpClient dataDumpClient = DATA_SINK_LOOKUP.get(dataSet.getEntityName());
+            Response theResponse = dataDumpClient.dumpData(Constants.AUTH_KEY,
                     recordBatchId.toString(),
                     dataSet);
             DataSinkResponse dsResponse = (DataSinkResponse) theResponse.getEntity();

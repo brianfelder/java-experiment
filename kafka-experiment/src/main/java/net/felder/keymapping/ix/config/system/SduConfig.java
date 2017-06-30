@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by bfelder on 6/29/17.
  */
-public class SduConfig {
+public class SduConfig implements SystemConfig {
     /**
      * TODO: We will need to put this into JSON config file, and include richer config info, including:
      *   identity-field: id
@@ -19,8 +19,23 @@ public class SduConfig {
      *   depends-on: attendee (parentId)
      * @return
      */
+    @Override
     public List<String> types() {
         return ImmutableList.of("nosrep");
+    }
+
+    @Override
+    public EntityMetadata metadataFor(String type) {
+        EntityMetadata toReturn = null;
+        if ("nosrep".equals(type)) {
+            toReturn = new EntityMetadata();
+            toReturn.setEntityName(type);
+            toReturn.setFields(this.fieldsFor(type));
+            toReturn.setEqualityFields(ImmutableList.of("firstName", "lastName", "emailAddress"));
+            toReturn.setEntityName(type);
+            toReturn.setIdentityField("id");
+        }
+        return toReturn;
     }
 
     /**
@@ -28,7 +43,7 @@ public class SduConfig {
      * @param type
      * @return
      */
-    public List<Field> fieldsFor(String type) {
+    private List<Field> fieldsFor(String type) {
         if ("nosrep".equals(type)) {
             return ImmutableList.of(
                     new Field("id", FieldType.STRING),
