@@ -1,0 +1,93 @@
+{
+  "sourceSystem" : "Uds",
+  "targetSystem" : "sdU",
+  "mappings" : [
+    // Approach #2: Direct field-to-field mappings.
+    // Must be 1 field to 1 field (for 2.0)
+    {
+      "sourceTypes" : ["ticket", "person"],
+      "targetType" : "attendee",
+      "fieldMappings" : [
+        {
+          "sourceField" : "ticket.id",
+          "targetField" : "regCode"
+        },
+        {
+          "sourceField" : "person.first",
+          "targetField" : "firstName"
+        },
+        {
+          "sourceField" : "person.last",
+          "targetField" : "lastName"
+        },
+        {
+          "sourceField" : "person.email",
+          "targetField" : "emailAddress"
+        }
+      ]
+    },
+    {
+      "sourceTypes" : ["enrollment"],
+      "targetType" : "scheduleItem",
+      "converterClass" : "com.acme.UdsToSduScheduleItemConverter"
+    },
+    {
+      "sourceTypes" : ["session"],
+      "targetType" : "activity",
+      "converterClass" : "com.acme.UdsToSduActivityConverter"
+    },
+    {
+      "sourceTypes" : ["person"],
+      "targetType" : "emailContact",
+      "converterClass" : "com.acme.UdsToSduEmailContactConverter"
+    }
+  ]
+}
+
+/**
+ * Assuming Uds to Sdu in this example.
+ *
+ * Map in the actual config ("lookup"):
+ * cc.fooType -> oss.barType, oss.bazType
+ * cc.barType -> oss.barType, oss.quxType
+ *
+ * We would build internal HashMap of the reverse ("reverse lookup"):
+ * oss.barType -> cc.fooType, cc.barType <- "when we see a oss.barType, we will need to invoke the converters for
+ *                                           cc.fooType and for cc.barType"
+ * oss.bazType -> cc.fooType
+ * oss.quxType -> cc.barType
+ *
+ * We need both sides of this internally. Here's what each one does:
+ *  - Config map: used to determine what values from the source to pass into the converter.
+ *  - Internal reversed map: When we see a value, will tell us what we possibly could convert,
+ *    if we have seen all values. Tells us what converters and resolvers we need to call.
+
+
+Lookup:
+
+sdU
+  .attendee -> [ticket, person]
+  .scheduleItem -> [enrollment]
+  .activity -> [session]
+  .emailContact -> [person]
+
+Reverse Lookup:
+// Type map:
+Uds
+  .ticket -> [attendee]
+  .person -> [attendee, emailContact]
+  .enrollment -> [scheduleItem]
+  .session -> [activity]
+
+// Processor map (where processor class implements both Converter
+// and Resolver interfaces.
+Uds
+  .ticket -> [new com.cvent.ix2.DefaultFieldMappingProcessor()]
+  .person -> [new com.cvent.ix2.DefaultFieldMappingProcessor(), new com.acme.UdsToSduEmailContactProcessor()]
+  .enrollment -> [new com.acme.UdsToScheduleItemProcessor()]
+  .session -> [new com.acme.UdsToSduActivityProcessor()]
+
+
+
+ */
+

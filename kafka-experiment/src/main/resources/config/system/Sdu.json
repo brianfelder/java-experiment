@@ -1,0 +1,73 @@
+{
+  "systemName" : "sdU",
+  "entities" : [
+    {
+      "type" : "attendee",
+      "identityField" : "ref",
+      "equalityFields" : ["firstName", "lastName"],
+      "highWatermarkField" : "updatedAt",
+      "highWatermarkInitialValue" : 0,
+      "valueDigestExclusionFields" : ["updatedAt", "updatedBy"],
+      "dependencies" : [
+        {
+          "refType" : "attendee",
+          "refField" : "parentRef"
+        }
+      ],
+      "resolverClass" : "com.acme.AttendeeResolver"
+      // ^^^ Defines any logic required for target gating,
+      // e.g. don't create an attendee unless the state is "registered"
+    },
+    {
+      "type" : "activity",
+      "identityField" : "ref",
+      "equalityFields" : ["sessionName", "startDate"],
+      "highWatermarkField" : "updatedAt",
+      "highWatermarkInitialValue" : 0,
+      "valueDigestExclusionFields" : ["updatedAt", "updatedBy"]
+    },
+    {
+      "type" : "scheduleItem",
+      "identityField" : "ref",
+      "equalityFields" : ["ref"],
+      "highWatermarkField" : "updatedAt",
+      "highWatermarkInitialValue" : 0,
+      "dependencies" : [
+        {
+          "refType" : "attendee",
+          "refField" : "attendeeRef"
+        },
+        {
+          "refType" : "activity",
+          "refField" : "activityRef"
+        }
+      ],
+      "valueDigestExclusionFields" : ["updatedAt", "updatedBy"]
+    },
+    {
+      "type" : "emailContact", // ref, attendeeRef, emailType, emailAddress
+      "identityField" : "ref",
+      "equalityFields" : ["attendeeRef", "emailType"], // home, work
+      "highWatermarkField" : "updatedAt",
+      "highWatermarkInitialValue" : 0,
+      "dependencies" : [
+        {
+          "refType" : "attendee",
+          "refField" : "attendeeRef"
+        }
+      ],
+      "valueDigestExclusionFields" : ["updatedAt", "updatedBy"]
+    }
+  ]
+}
+
+
+
+// attendee
+// emailContact
+// scheduleItem
+// activity
+
+attendee ABC (primary)
++- attendee DEF (parentId: ABC)
++- attendee GHI (parentId: ABC)

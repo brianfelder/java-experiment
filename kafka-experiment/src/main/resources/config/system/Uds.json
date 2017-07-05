@@ -1,0 +1,53 @@
+{
+  "systemName" : "Uds",
+  "entities" : [
+    {
+      "type" : "person",
+      "identityField" : "id",
+      "equalityFields" : ["first", "last", "email"],
+      "highWatermarkField" : "lastModified",
+      "highWatermarkInitialValue" : 0,
+      "valueDigestExclusionFields" : ["lastModified", "modifiedBy"]
+    },
+    {
+      "type" : "ticket",
+      "identityField" : "id",
+      "equalityFields" : ["id"],
+      "highWatermarkField" : "lastModified",
+      "highWatermarkInitialValue" : 0,
+      "dependencies" : [
+        {
+          "refType" : "person",
+          "refField" : "personId"
+        }
+      ],
+      "valueDigestExclusionFields" : ["lastModified", "modifiedBy"]
+    },
+    {
+      "type" : "session",
+      "identityField" : "id",
+      "equalityFields" : ["name", "startDateTime"],
+      "highWatermarkField" : "lastModified",
+      "highWatermarkInitialValue" : 0,
+      "valueDigestExclusionFields" : ["lastModified", "modifiedBy"]
+    },
+    {
+      "type" : "enrollment",
+      "identityField" : "id",
+      "equalityFields" : ["id"],
+      "highWatermarkField" : "lastModified",
+      "highWatermarkInitialValue" : 0,
+      "dependencies" : [
+        {
+          "refType" : "ticket",
+          "refField" : "ticketId"
+        },
+        {
+          "refType" : "session",
+          "refField" : "sessionId"
+        }
+      ],
+      "valueDigestExclusionFields" : ["lastModified", "modifiedBy"]
+    }
+  ]
+}

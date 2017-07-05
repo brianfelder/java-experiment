@@ -34,6 +34,58 @@ public class UdsConfig implements SystemConfig {
             toReturn.setEqualityFields(ImmutableList.of("first", "last", "email"));
             toReturn.setIdentityField("id");
         }
+        if ("fooType".equals(type)) {
+            toReturn = new EntityMetadata();
+            toReturn.setEntityName(type);
+            EntityMetadata.IntraSystemDependency theDependency = new EntityMetadata.IntraSystemDependency();
+            theDependency.setEntityName("barType");
+            theDependency.setThroughField("barId");
+            EntityMetadata.IntraSystemDependency theDependency2 = new EntityMetadata.IntraSystemDependency();
+            theDependency2.setEntityName("quxType");
+            theDependency2.setThroughField("quxId");
+            toReturn.setIdentityField("id");
+            toReturn.setIntraSystemDependencies(ImmutableList.of(theDependency, theDependency2));
+        }
+        if ("barType".equals(type)) {
+            toReturn = new EntityMetadata();
+            toReturn.setEntityName(type);
+            EntityMetadata.IntraSystemDependency theDependency = new EntityMetadata.IntraSystemDependency();
+            theDependency.setEntityName("bazType");
+            theDependency.setThroughField("bazId");
+            toReturn.setIdentityField("id");
+            toReturn.setIntraSystemDependencies(ImmutableList.of(theDependency));
+        }
+        if ("bazType".equals(type)) {
+            toReturn = new EntityMetadata();
+            toReturn.setEntityName(type);
+            toReturn.setIdentityField("id");
+        }
+        if ("quxType".equals(type)) {
+            toReturn = new EntityMetadata();
+            toReturn.setEntityName(type);
+            toReturn.setIdentityField("id");
+        }
+
+
+
+        if ("hotdog".equals(type)) {
+            toReturn = new EntityMetadata();
+            toReturn.setEntityName(type);
+            EntityMetadata.IntraSystemDependency theDependency = new EntityMetadata.IntraSystemDependency();
+            theDependency.setEntityName("bun");
+            theDependency.setThroughField("bunId");
+            toReturn.setIdentityField("id");
+        }
+        if ("bun".equals(type)) {
+            toReturn = new EntityMetadata();
+            toReturn.setEntityName(type);
+            toReturn.setIdentityField("id");
+        }
+        if ("mustard".equals(type)) {
+            toReturn = new EntityMetadata();
+            toReturn.setEntityName(type);
+            toReturn.setIdentityField("id");
+        }
         return toReturn;
     }
 
