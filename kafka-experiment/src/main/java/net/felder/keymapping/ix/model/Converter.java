@@ -1,6 +1,6 @@
 package net.felder.keymapping.ix.model;
 
-import net.felder.keymapping.ix.config.system.EntityMetadata;
+import net.felder.keymapping.ix.config.system.TypeMetadata;
 
 import java.util.Map;
 
@@ -10,5 +10,5 @@ import java.util.Map;
 public interface Converter {
     Pair<IxPipelineKey,IxRecord> convert(
             Map<IxRecordKey, IxRecord> sourceItems,
-            Map<String, EntityMetadata> sourceMetadataMap);
+            Map<String, TypeMetadata> sourceMetadataMap);
 }

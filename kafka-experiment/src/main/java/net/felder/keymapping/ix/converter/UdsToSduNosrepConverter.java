@@ -1,7 +1,7 @@
 package net.felder.keymapping.ix.converter;
 
 import com.cvent.extensions.Row;
-import net.felder.keymapping.ix.config.system.EntityMetadata;
+import net.felder.keymapping.ix.config.system.TypeMetadata;
 import net.felder.keymapping.ix.model.Converter;
 import net.felder.keymapping.ix.model.IxPipelineKey;
 import net.felder.keymapping.ix.model.IxRecord;
@@ -25,7 +25,7 @@ public class UdsToSduNosrepConverter implements Converter {
     @Override
     public Pair<IxPipelineKey, IxRecord> convert(
             Map<IxRecordKey, IxRecord> sourceItems,
-            Map<String, EntityMetadata> sourceMetadataMap) {
+            Map<String, TypeMetadata> sourceMetadataMap) {
         IxPipelineKey returnPipelineKey = new IxPipelineKey();
         returnPipelineKey.setConverterClassName(this.getClass().getName());
         IxRecord returnIxRecord = null;

@@ -25,11 +25,11 @@ public class SduConfig implements SystemConfig {
     }
 
     @Override
-    public EntityMetadata metadataFor(String type) {
-        EntityMetadata toReturn = null;
+    public TypeMetadata metadataFor(String type) {
+        TypeMetadata toReturn = null;
         if ("nosrep".equals(type)) {
-            toReturn = new EntityMetadata();
-            toReturn.setEntityName(type);
+            toReturn = new TypeMetadata();
+            toReturn.setTypeName(type);
             toReturn.setFields(this.fieldsFor(type));
             toReturn.setEqualityFields(ImmutableList.of("firstName", "lastName", "emailAddress"));
             toReturn.setIdentityField("id");

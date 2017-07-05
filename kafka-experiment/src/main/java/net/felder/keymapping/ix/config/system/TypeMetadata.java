@@ -7,22 +7,22 @@ import java.util.List;
 /**
  * Created by bfelder on 6/30/17.
  */
-public class EntityMetadata {
-    private String entityName;
+public class TypeMetadata {
+    private String typeName;
     private List<Field> fields;
     private String identityField;
     private List<String> equalityFields;
     private String highWatermarkField;
     private Object highWatermarkInitialValue;
-    private List<IntraSystemDependency> intraSystemDependencies;
+    private List<Dependency> dependencies;
     private List<String> valueDigestExclusionFields;
 
-    public String getEntityName() {
-        return entityName;
+    public String getTypeName() {
+        return typeName;
     }
 
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public List<Field> getFields() {
@@ -65,13 +65,13 @@ public class EntityMetadata {
         this.highWatermarkInitialValue = highWatermarkInitialValue;
     }
 
-    public List<IntraSystemDependency> getIntraSystemDependencies() {
-        return intraSystemDependencies;
+    public List<Dependency> getDependencies() {
+        return dependencies;
     }
 
-    public void setIntraSystemDependencies(
-            List<IntraSystemDependency> intraSystemDependencies) {
-        this.intraSystemDependencies = intraSystemDependencies;
+    public void setDependencies(
+            List<Dependency> dependencies) {
+        this.dependencies = dependencies;
     }
 
     public List<String> getValueDigestExclusionFields() {
@@ -82,24 +82,24 @@ public class EntityMetadata {
         this.valueDigestExclusionFields = valueDigestExclusionFields;
     }
 
-    public static class IntraSystemDependency {
-        String entityName;
-        String throughField;
+    public static class Dependency {
+        String refType;
+        String refField;
 
-        public String getEntityName() {
-            return entityName;
+        public String getRefType() {
+            return refType;
         }
 
-        public void setEntityName(String entityName) {
-            this.entityName = entityName;
+        public void setRefType(String refType) {
+            this.refType = refType;
         }
 
-        public String getThroughField() {
-            return throughField;
+        public String getRefField() {
+            return refField;
         }
 
-        public void setThroughField(String throughField) {
-            this.throughField = throughField;
+        public void setRefField(String refField) {
+            this.refField = refField;
         }
     }
 

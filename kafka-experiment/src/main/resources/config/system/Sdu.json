@@ -2,7 +2,7 @@
   "systemName" : "sdU",
   "entities" : [
     {
-      "type" : "attendee",
+      "typeName" : "attendee",
       "identityField" : "ref",
       "equalityFields" : ["firstName", "lastName"],
       "highWatermarkField" : "updatedAt",
@@ -19,7 +19,7 @@
       // e.g. don't create an attendee unless the state is "registered"
     },
     {
-      "type" : "activity",
+      "typeName" : "activity",
       "identityField" : "ref",
       "equalityFields" : ["sessionName", "startDate"],
       "highWatermarkField" : "updatedAt",
@@ -27,7 +27,7 @@
       "valueDigestExclusionFields" : ["updatedAt", "updatedBy"]
     },
     {
-      "type" : "scheduleItem",
+      "typeName" : "scheduleItem",
       "identityField" : "ref",
       "equalityFields" : ["ref"],
       "highWatermarkField" : "updatedAt",
@@ -45,7 +45,7 @@
       "valueDigestExclusionFields" : ["updatedAt", "updatedBy"]
     },
     {
-      "type" : "emailContact", // ref, attendeeRef, emailType, emailAddress
+      "typeName" : "emailContact", // ref, attendeeRef, emailType, emailAddress
       "identityField" : "ref",
       "equalityFields" : ["attendeeRef", "emailType"], // home, work
       "highWatermarkField" : "updatedAt",

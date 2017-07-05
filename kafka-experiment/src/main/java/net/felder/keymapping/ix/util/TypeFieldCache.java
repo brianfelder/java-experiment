@@ -11,16 +11,16 @@ import java.util.Map;
  * Created by bfelder on 6/27/17.
  * // TODO: Make this smarter, TTL, versioning, and the like.
  */
-public class EntityFieldCache {
+public class TypeFieldCache {
 
-    // TODO: This will really need to be something like dataSource -> accountId -> EntityType -> ArrayList<Field>
+    // TODO: This will really need to be something like dataSource -> accountId -> TypeName -> ArrayList<Field>
     // This will work for PoC.
-    private Map<String, List<Field>> fieldsForEntity;
-    private static Map<String, EntityFieldCache> instances = new HashMap<>();
+    private Map<String, List<Field>> fieldsForType;
+    private static Map<String, TypeFieldCache> instances = new HashMap<>();
 
-    private EntityFieldCache() {
+    private TypeFieldCache() {
         super();
-        fieldsForEntity = new HashMap<>();
+        fieldsForType = new HashMap<>();
     }
 
     /**
@@ -29,35 +29,35 @@ public class EntityFieldCache {
      * @param accountId e.g. "1234"
      * @return
      */
-    public static EntityFieldCache of(String dataSourceName, String accountId) {
+    public static TypeFieldCache of(String dataSourceName, String accountId) {
         return of(dataSourceName + "::" + accountId);
     }
 
-    public static EntityFieldCache of(String dataSourceName) {
-        EntityFieldCache toReturn = instances.get(dataSourceName);
+    public static TypeFieldCache of(String dataSourceName) {
+        TypeFieldCache toReturn = instances.get(dataSourceName);
         if (toReturn == null) {
-            toReturn = new EntityFieldCache();
+            toReturn = new TypeFieldCache();
             instances.put(dataSourceName, toReturn);
         }
         return toReturn;
     }
 
-    public Map<String, Integer> getFieldLookupMapFor(String entityName) {
-        List<Field> entityFields = fieldsForEntity.get(entityName);
-        Map<String, Integer> toReturn = toLookupMap(entityFields);
+    public Map<String, Integer> getFieldLookupMapFor(String typeName) {
+        List<Field> typeFields = fieldsForType.get(typeName);
+        Map<String, Integer> toReturn = toLookupMap(typeFields);
         return toReturn;
     }
 
-    public List<Field> getFieldsFor(String entityName) {
-        List<Field> entityFields = fieldsForEntity.get(entityName);
-        if (entityFields == null) {
+    public List<Field> getFieldsFor(String typeName) {
+        List<Field> typeFields = fieldsForType.get(typeName);
+        if (typeFields == null) {
             return null;
         }
-        return ImmutableList.copyOf(entityFields);
+        return ImmutableList.copyOf(typeFields);
     }
 
-    public void setFieldsFor(String entityName, List<Field> fields) {
-        fieldsForEntity.put(entityName, fields);
+    public void setFieldsFor(String typeName, List<Field> fields) {
+        fieldsForType.put(typeName, fields);
     }
 
     protected Map<String, Integer> toLookupMap(List<Field> fields) {

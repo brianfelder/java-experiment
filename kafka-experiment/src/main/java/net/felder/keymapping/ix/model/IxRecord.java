@@ -7,24 +7,24 @@ import com.cvent.extensions.Row;
  * Created by bfelder on 6/28/17.
  */
 public class IxRecord {
-    private String entityType;
+    private String typeName;
     private Row row;
 
     public IxRecord() {
         super();
     }
 
-    public IxRecord(String entityType, Row row) {
-        this.entityType = entityType;
+    public IxRecord(String typeName, Row row) {
+        this.typeName = typeName;
         this.row = row;
     }
 
-    public String getEntityType() {
-        return entityType;
+    public String getTypeName() {
+        return typeName;
     }
 
-    public void setEntityType(String entityType) {
-        this.entityType = entityType;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public Row getRow() {

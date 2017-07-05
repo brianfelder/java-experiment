@@ -18,6 +18,6 @@ public interface SystemConfig {
      * @param type
      * @return
      */
-    public EntityMetadata metadataFor(String type);
+    public TypeMetadata metadataFor(String type);
 
 }

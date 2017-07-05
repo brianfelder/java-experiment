@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import net.felder.keymapping.ix.model.IxRecord;
 import net.felder.keymapping.ix.model.IxRecordKey;
 import net.felder.keymapping.ix.util.Constants;
-import net.felder.keymapping.ix.util.EntityFieldCache;
+import net.felder.keymapping.ix.util.TypeFieldCache;
 import net.felder.keymapping.ix.util.KafkaProducerHelper;
 import net.felder.keymapping.ix.util.RowHelper;
 import net.felder.keymapping.source.UdsSkeleton;
@@ -38,7 +38,7 @@ public class IxDataSourceHandler {
                     null);
 
             // Set up the fields in the fieldCache.
-            EntityFieldCache fieldCache = EntityFieldCache.of(Constants.SOURCE_SYSTEM_NAME);
+            TypeFieldCache fieldCache = TypeFieldCache.of(Constants.SOURCE_SYSTEM_NAME);
             fieldCache.setFieldsFor(Constants.SOURCE_ITEM_TYPE, dataSet.getFields());
             Map<String, Integer> fieldLookupMap = fieldCache.getFieldLookupMapFor(Constants.SOURCE_ITEM_TYPE);
             for (int i = 0; i < dataSet.getRows().size(); i++) {

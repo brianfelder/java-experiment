@@ -71,7 +71,7 @@ public class IxDataSinkHandler {
             // TODO: Probably redundant to set items below more than once.
             SystemConfig targetConfig = SystemConfigLookup.getInstance().configFor(key.getSystemName());
             dataSetForThisBatch.setFields(targetConfig.metadataFor(key.getItemType()).getFields());
-            dataSetForThisBatch.setEntityName(key.getSystemName());
+            dataSetForThisBatch.setTypeName(key.getSystemName());
             System.out.println("    Processed record: " + key);
         }
 
@@ -84,7 +84,7 @@ public class IxDataSinkHandler {
         }
 
         protected void handleAcks(IxDataSet dataSet, UUID recordBatchId) {
-            DataDumpClient dataDumpClient = DATA_SINK_LOOKUP.get(dataSet.getEntityName());
+            DataDumpClient dataDumpClient = DATA_SINK_LOOKUP.get(dataSet.getTypeName());
             Response theResponse = dataDumpClient.dumpData(Constants.AUTH_KEY,
                     recordBatchId.toString(),
                     dataSet);

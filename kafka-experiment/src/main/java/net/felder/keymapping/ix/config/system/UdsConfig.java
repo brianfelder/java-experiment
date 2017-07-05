@@ -25,65 +25,65 @@ public class UdsConfig implements SystemConfig {
     }
 
     @Override
-    public EntityMetadata metadataFor(String type) {
-        EntityMetadata toReturn = null;
+    public TypeMetadata metadataFor(String type) {
+        TypeMetadata toReturn = null;
         if ("person".equals(type)) {
-            toReturn = new EntityMetadata();
-            toReturn.setEntityName(type);
+            toReturn = new TypeMetadata();
+            toReturn.setTypeName(type);
             toReturn.setFields(this.fieldsFor(type));
             toReturn.setEqualityFields(ImmutableList.of("first", "last", "email"));
             toReturn.setIdentityField("id");
         }
         if ("fooType".equals(type)) {
-            toReturn = new EntityMetadata();
-            toReturn.setEntityName(type);
-            EntityMetadata.IntraSystemDependency theDependency = new EntityMetadata.IntraSystemDependency();
-            theDependency.setEntityName("barType");
-            theDependency.setThroughField("barId");
-            EntityMetadata.IntraSystemDependency theDependency2 = new EntityMetadata.IntraSystemDependency();
-            theDependency2.setEntityName("quxType");
-            theDependency2.setThroughField("quxId");
+            toReturn = new TypeMetadata();
+            toReturn.setTypeName(type);
+            TypeMetadata.Dependency theDependency = new TypeMetadata.Dependency();
+            theDependency.setRefType("barType");
+            theDependency.setRefField("barId");
+            TypeMetadata.Dependency theDependency2 = new TypeMetadata.Dependency();
+            theDependency2.setRefType("quxType");
+            theDependency2.setRefField("quxId");
             toReturn.setIdentityField("id");
-            toReturn.setIntraSystemDependencies(ImmutableList.of(theDependency, theDependency2));
+            toReturn.setDependencies(ImmutableList.of(theDependency, theDependency2));
         }
         if ("barType".equals(type)) {
-            toReturn = new EntityMetadata();
-            toReturn.setEntityName(type);
-            EntityMetadata.IntraSystemDependency theDependency = new EntityMetadata.IntraSystemDependency();
-            theDependency.setEntityName("bazType");
-            theDependency.setThroughField("bazId");
+            toReturn = new TypeMetadata();
+            toReturn.setTypeName(type);
+            TypeMetadata.Dependency theDependency = new TypeMetadata.Dependency();
+            theDependency.setRefType("bazType");
+            theDependency.setRefField("bazId");
             toReturn.setIdentityField("id");
-            toReturn.setIntraSystemDependencies(ImmutableList.of(theDependency));
+            toReturn.setDependencies(ImmutableList.of(theDependency));
         }
         if ("bazType".equals(type)) {
-            toReturn = new EntityMetadata();
-            toReturn.setEntityName(type);
+            toReturn = new TypeMetadata();
+            toReturn.setTypeName(type);
             toReturn.setIdentityField("id");
         }
         if ("quxType".equals(type)) {
-            toReturn = new EntityMetadata();
-            toReturn.setEntityName(type);
+            toReturn = new TypeMetadata();
+            toReturn.setTypeName(type);
             toReturn.setIdentityField("id");
         }
 
 
 
         if ("hotdog".equals(type)) {
-            toReturn = new EntityMetadata();
-            toReturn.setEntityName(type);
-            EntityMetadata.IntraSystemDependency theDependency = new EntityMetadata.IntraSystemDependency();
-            theDependency.setEntityName("bun");
-            theDependency.setThroughField("bunId");
+            toReturn = new TypeMetadata();
+            toReturn.setTypeName(type);
+            TypeMetadata.Dependency theDependency = new TypeMetadata.Dependency();
+            theDependency.setRefType("bun");
+            theDependency.setRefField("bunId");
             toReturn.setIdentityField("id");
         }
         if ("bun".equals(type)) {
-            toReturn = new EntityMetadata();
-            toReturn.setEntityName(type);
+            toReturn = new TypeMetadata();
+            toReturn.setTypeName(type);
             toReturn.setIdentityField("id");
         }
         if ("mustard".equals(type)) {
-            toReturn = new EntityMetadata();
-            toReturn.setEntityName(type);
+            toReturn = new TypeMetadata();
+            toReturn.setTypeName(type);
             toReturn.setIdentityField("id");
         }
         return toReturn;
