@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Created by bfelder on 6/29/17.
  */
+@Deprecated
 public class UdsConfig implements SystemConfig {
     /**
      * TODO: We will need to put this into JSON config file, and include richer config info, including:

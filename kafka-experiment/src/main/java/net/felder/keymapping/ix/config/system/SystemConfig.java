@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * Created by bfelder on 6/30/17.
  */
+@Deprecated
 public interface SystemConfig {
     /**
      * The list of types supported by this system.

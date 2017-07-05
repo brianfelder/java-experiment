@@ -1,8 +1,8 @@
 package net.felder.keymapping.ix.engine;
 
 import com.google.common.collect.ImmutableMap;
-import net.felder.keymapping.ix.config.system.SystemConfig;
-import net.felder.keymapping.ix.config.system.SystemConfigLookup;
+import net.felder.keymapping.ix.config.system.SystemMetadata;
+import net.felder.keymapping.ix.config.system.SystemMetadataLookup;
 import net.felder.keymapping.ix.config.typemap.ConverterTypeMap;
 import net.felder.keymapping.ix.config.typemap.ConverterTypeMapLookup;
 import net.felder.keymapping.ix.model.Converter;
@@ -82,13 +82,13 @@ public class IxEngine {
                 throw new RuntimeException(e);
             }
 
-            SystemConfig systemConfig = SystemConfigLookup.getInstance().configFor(sourceKey.getSystemName());
+            SystemMetadata metadata = SystemMetadataLookup.getInstance().configFor(sourceKey.getSystemName());
             Pair<IxPipelineKey, IxRecord> convertResult =
                     converter.convert(ImmutableMap.of(
                             sourceKey, sourceRecord),
                             ImmutableMap.of(
                                     sourceKey.getItemType(),
-                                    systemConfig.metadataFor(sourceKey.getItemType())
+                                    metadata.typeMetadataFor(sourceKey.getItemType())
                             ));
             ixRecordsForThisBatch.add(convertResult);
             System.out.println("    Processed record: " + targetKey);

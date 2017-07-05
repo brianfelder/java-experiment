@@ -2,8 +2,8 @@ package net.felder.keymapping.ix.sinkhandler;
 
 import com.cvent.extensions.DataDumpClient;
 import com.google.common.collect.ImmutableMap;
-import net.felder.keymapping.ix.config.system.SystemConfig;
-import net.felder.keymapping.ix.config.system.SystemConfigLookup;
+import net.felder.keymapping.ix.config.system.SystemMetadata;
+import net.felder.keymapping.ix.config.system.SystemMetadataLookup;
 import net.felder.keymapping.ix.model.DataSinkResponse;
 import net.felder.keymapping.ix.model.DataSinkResponseItem;
 import net.felder.keymapping.ix.model.IxDataSet;
@@ -69,8 +69,8 @@ public class IxDataSinkHandler {
             dataSetForThisBatch.getRows().add(record.getRow());
             dataSetForThisBatch.getRowRecordKeys().add(key);
             // TODO: Probably redundant to set items below more than once.
-            SystemConfig targetConfig = SystemConfigLookup.getInstance().configFor(key.getSystemName());
-            dataSetForThisBatch.setFields(targetConfig.metadataFor(key.getItemType()).getFields());
+            SystemMetadata targetConfig = SystemMetadataLookup.getInstance().configFor(key.getSystemName());
+            dataSetForThisBatch.setFields(targetConfig.typeMetadataFor(key.getItemType()).getFields());
             dataSetForThisBatch.setTypeName(key.getSystemName());
             System.out.println("    Processed record: " + key);
         }
