@@ -15,7 +15,7 @@ public class TypeMetadata {
     private String highWatermarkField;
     private Object highWatermarkInitialValue;
     private List<Dependency> dependencies;
-    private List<String> valueDigestExclusionFields;
+    private List<String> digestExclusionFields;
 
     public String getTypeName() {
         return typeName;
@@ -74,12 +74,12 @@ public class TypeMetadata {
         this.dependencies = dependencies;
     }
 
-    public List<String> getValueDigestExclusionFields() {
-        return valueDigestExclusionFields;
+    public List<String> getDigestExclusionFields() {
+        return digestExclusionFields;
     }
 
-    public void setValueDigestExclusionFields(List<String> valueDigestExclusionFields) {
-        this.valueDigestExclusionFields = valueDigestExclusionFields;
+    public void setDigestExclusionFields(List<String> digestExclusionFields) {
+        this.digestExclusionFields = digestExclusionFields;
     }
 
     public static class Dependency {

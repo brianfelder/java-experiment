@@ -40,7 +40,7 @@ mvn exec:java -Dexec.mainClass="net.felder.RawKafkaConsumerRunner"
 
 
 Consume from the console:
-bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic kafkaFirst --from-beginning
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --topic kafkaFirst
 
 
 

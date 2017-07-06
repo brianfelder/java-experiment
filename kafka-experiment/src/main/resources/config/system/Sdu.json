@@ -7,7 +7,7 @@
       "equalityFields" : ["firstName", "lastName"],
       "highWatermarkField" : "updatedAt",
       "highWatermarkInitialValue" : 0,
-      "valueDigestExclusionFields" : ["updatedAt", "updatedBy"],
+      "digestExclusionFields" : ["updatedAt", "updatedBy"],
       "dependencies" : [
         {
           "refType" : "attendee",
@@ -24,7 +24,7 @@
       "equalityFields" : ["sessionName", "startDate"],
       "highWatermarkField" : "updatedAt",
       "highWatermarkInitialValue" : 0,
-      "valueDigestExclusionFields" : ["updatedAt", "updatedBy"]
+      "digestExclusionFields" : ["updatedAt", "updatedBy"]
     },
     {
       "typeName" : "scheduleItem",
@@ -42,7 +42,7 @@
           "refField" : "activityRef"
         }
       ],
-      "valueDigestExclusionFields" : ["updatedAt", "updatedBy"]
+      "digestExclusionFields" : ["updatedAt", "updatedBy"]
     },
     {
       "typeName" : "emailContact", // ref, attendeeRef, emailType, emailAddress
@@ -56,7 +56,7 @@
           "refField" : "attendeeRef"
         }
       ],
-      "valueDigestExclusionFields" : ["updatedAt", "updatedBy"]
+      "digestExclusionFields" : ["updatedAt", "updatedBy"]
     }
   ]
 }

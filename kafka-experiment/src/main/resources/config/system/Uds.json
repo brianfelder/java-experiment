@@ -2,15 +2,15 @@
   "systemName" : "Uds",
   "entities" : [
     {
-      "type" : "person",
+      "typeName" : "person",
       "identityField" : "id",
       "equalityFields" : ["first", "last", "email"],
       "highWatermarkField" : "lastModified",
       "highWatermarkInitialValue" : 0,
-      "valueDigestExclusionFields" : ["lastModified", "modifiedBy"]
+      "digestExclusionFields" : ["lastModified", "modifiedBy"]
     },
     {
-      "type" : "ticket",
+      "typeName" : "ticket",
       "identityField" : "id",
       "equalityFields" : ["id"],
       "highWatermarkField" : "lastModified",
@@ -21,18 +21,18 @@
           "refField" : "personId"
         }
       ],
-      "valueDigestExclusionFields" : ["lastModified", "modifiedBy"]
+      "digestExclusionFields" : ["lastModified", "modifiedBy"]
     },
     {
-      "type" : "session",
+      "typeName" : "session",
       "identityField" : "id",
       "equalityFields" : ["name", "startDateTime"],
       "highWatermarkField" : "lastModified",
       "highWatermarkInitialValue" : 0,
-      "valueDigestExclusionFields" : ["lastModified", "modifiedBy"]
+      "digestExclusionFields" : ["lastModified", "modifiedBy"]
     },
     {
-      "type" : "enrollment",
+      "typeName" : "enrollment",
       "identityField" : "id",
       "equalityFields" : ["id"],
       "highWatermarkField" : "lastModified",
@@ -47,7 +47,7 @@
           "refField" : "sessionId"
         }
       ],
-      "valueDigestExclusionFields" : ["lastModified", "modifiedBy"]
+      "digestExclusionFields" : ["lastModified", "modifiedBy"]
     }
   ]
 }
